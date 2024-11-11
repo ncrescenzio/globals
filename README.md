@@ -18,3 +18,8 @@ cmake --build build
 ```
 cmake --install build --prefix /path/to/install/dir
 ```
+
+## Dependencies
+
+* Lapack
+* Blas
