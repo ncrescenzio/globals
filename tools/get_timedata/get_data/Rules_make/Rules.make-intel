@@ -1,0 +1,22 @@
+# Intel fortran
+FC            = ifort
+#INTELBASE     = "/opt/intel/composer_xe_2013.1.117"
+#OPENMP        = -openmp
+MODEL         = -mcmodel=medium
+OFLAGS        = -O2 -assume buffered_io 
+DFLAGS        = -g -C -traceback -debug all
+PFLAGS        = -p
+CPPFLAGS      = -D_INTEL_COMP
+ARFLAGS       = 
+# MKL Intel libraries
+# Compilation flags:
+# MKL_CFLAGS     = -I$(INTELBASE)/lib/intel64 -I$(INTELBASE)/mkl/lib/em64t
+# Linking flags:
+# MKL_LDFLAGS    = -L$(INTELBASE)/lib/intel64 -L$(INTELBASE)/mkl/lib/em64t -lmkl_intel_lp64 -lmkl_intel_thread -lmkl_core -lguide -lpthread
+
+ODIR          = objs
+MDIR          = mods
+LDIR          = libs
+DDIR          = doxygen
+
+INCLUDE       = -module $(MODDIR)

@@ -1,0 +1,23 @@
+# XLF fortran
+FC            = xlf
+#OPENMP        = -fopenmp
+MODEL         = -q64=largetype -qarch=pwr6 -blpdata -bigendian 
+OFLAGS        = -O2
+DFLAGS        = -g -C  -q64=largetype -qarch=pwr6 -blpdata -qflttrap -qsigtrap 
+PFLAGS        = -pg
+
+FC90          = xlf90
+FFLAGS        = -O3
+F90FLAGS      = -O3-qfree -qsuffix=f=f90 -bigendian
+LDFLAGS       = -q64=largetype -qarch=pwr6 -L/usr/local/lib
+CPPFLAGS      = -WF,-D_XLF_COMP
+
+ARFLAGS       = -X64 
+
+ODIR          = objs
+MDIR          = mods
+LDIR          = libs
+DDIR          = doxygen
+
+INCLUDE       = -I $(MODDIR)
+
