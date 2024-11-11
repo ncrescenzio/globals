@@ -4,7 +4,7 @@ Original library: [https://gitlab.com/enrico_facca/globals](https://gitlab.com/e
 
 * Clone the repository
 ```
-git@github.com:ncrescenzio/globals.git
+git clone git@github.com:ncrescenzio/globals.git
 ```
 
 * Build the library
