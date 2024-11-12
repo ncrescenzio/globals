@@ -80,21 +80,21 @@ export(EXPORT globals-targets
 
 #####################################################################
 
-# Add CPack to project
-set(CPACK_PACKAGE_NAME "globals")
-set(CPACK_PACKAGE_VENDOR "UniPD")
-set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Fortran library for the declaration of global variables and methods")
-set(CPACK_PACKAGE_HOMEPAGE_URL "https://github.com/ncrescenzio/globals")
-set(CPACK_RESOURCE_FILE_README "README.md")
-set(CPACK_PACKAGE_CONTACT "nicolo.crescenzio@math.unipd.it")
-set(CPACK_PACKAGE_VERSION "1.0.0")
-set(CPACK_PACKAGE_VERSION_MAJOR "1")
-set(CPACK_PACKAGE_VERSION_MINOR "0")
-set(CPACK_PACKAGE_VERSION_PATCH "0")
-set(CPACK_GENERATOR "STGZ;TGZ")
-set(CPACK_SOURCE_GENERATOR "TGZ")
-set(CPACK_SOURCE_IGNORE_FILES ".git*;build")
-set(CPACK_PACKAGE_DIRECTORY "packaging") # output directory in which CPack will put the packages (can be overridden using -B)
-set(CPACK_PACKAGE_INSTALL_DIRECTORY "${CPACK_PACKAGE_NAME}.${CPACK_PACKAGE_VERSION}")
-
-include(CPack)
+# # Add CPack to project
+# set(CPACK_PACKAGE_NAME "globals")
+# set(CPACK_PACKAGE_VENDOR "UniPD")
+# set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Fortran library for the declaration of global variables and methods")
+# set(CPACK_PACKAGE_HOMEPAGE_URL "https://github.com/ncrescenzio/globals")
+# set(CPACK_RESOURCE_FILE_README "README.md")
+# set(CPACK_PACKAGE_CONTACT "nicolo.crescenzio@math.unipd.it")
+# set(CPACK_PACKAGE_VERSION "1.0.0")
+# set(CPACK_PACKAGE_VERSION_MAJOR "1")
+# set(CPACK_PACKAGE_VERSION_MINOR "0")
+# set(CPACK_PACKAGE_VERSION_PATCH "0")
+# set(CPACK_GENERATOR "STGZ;TGZ")
+# set(CPACK_SOURCE_GENERATOR "TGZ")
+# set(CPACK_SOURCE_IGNORE_FILES ".git*;build")
+# set(CPACK_PACKAGE_DIRECTORY "packaging") # output directory in which CPack will put the packages (can be overridden using -B)
+# set(CPACK_PACKAGE_INSTALL_DIRECTORY "${CPACK_PACKAGE_NAME}.${CPACK_PACKAGE_VERSION}")
+#
+# include(CPack)
