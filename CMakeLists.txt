@@ -8,7 +8,7 @@ project(globals LANGUAGES Fortran VERSION 1.0)
 #####################################################################
 
 # Set default build type
-set(CMAKE_BUILD_TYPE "Release" CACHE STRING "Default build configuration")
+set(CMAKE_BUILD_TYPE "Release" CACHE STRING "Default build configuration" FORCE)
 
 # Set flags for each build type
 set(CMAKE_Fortran_FLAGS_BASE "-fPIC -ffree-line-length-none")
@@ -18,13 +18,14 @@ set(CMAKE_Fortran_FLAGS_RELWITHIEEE "${CMAKE_Fortran_FLAGS_RELEASE} -fno-unsafe-
 
 # Check if build type is in the list of admissible build types
 set(CMAKE_CONFIGURATION_TYPES Release Debug RelWithIEEE)
-list(FIND CMAKE_CONFIGURATION_TYPES CMAKE_BUILD_TYPE FOUND_MODE)
+
+list(FIND CMAKE_CONFIGURATION_TYPES ${CMAKE_BUILD_TYPE} FOUND_MODE)
 if(FOUND_MODE EQUAL -1)
    message(WARNING "Unknown CMAKE_BUILD_TYPE '${CMAKE_BUILD_TYPE}', using 'Release'.")
    set(CMAKE_BUILD_TYPE Release)
 endif(FOUND_MODE EQUAL -1)
 
-message(STATUS "*** Build type: ${CMAKE_BUILD_TYPE}")
+message(STATUS "Build type: ${CMAKE_BUILD_TYPE}")
 
 #####################################################################
 
