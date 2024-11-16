@@ -10,7 +10,7 @@ module GaussQuadrature
 
    type, public :: gaussq
       !> Number of 1d Gauss points
-      integer :: ::ngauss
+      integer :: ngauss
       !> Dimension (`::ngauss`)
       !> Coefficients of 1d Gauss points on \f$[-1,+1]\f$.
       real(kind = double) , allocatable :: coeff1d(:)
