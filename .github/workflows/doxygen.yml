@@ -35,8 +35,17 @@ jobs:
           submodules: true
       - name: Setup Pages
         uses: actions/configure-pages@v5
+      - name: Install Graphviz
+        run: sudo apt-get install -y graphviz cmake
       - name: Install Doxygen
-        run: sudo apt-get install -y doxygen graphviz
+        run: |
+          curl -L -O https://github.com/doxygen/doxygen/archive/refs/tags/Release_1_12_0.tar.gz
+          tar -zvxf Release_1_12_0.tar.gz
+          cd doxygen-Release_1_12_0/
+          cmake -S . -B build
+          cd build
+          make
+          sudo make install
       - name: Generate Doxygen documentation
         run: |
           cd docs
