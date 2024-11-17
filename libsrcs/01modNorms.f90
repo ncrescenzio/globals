@@ -62,7 +62,7 @@ module Norms
       !> Indeces of the Dirichlet Nodes
       integer, allocatable :: noddir(:)
    contains
-      !> Constructor for type `dir_norm`
+      !> Constructor for type `Norms::dir_norm`
       procedure, public :: init => init_dir_norm
       !> Evaluation of the weighted Euclidean norm
       procedure, public :: eval_norm => eval_dir_norm
