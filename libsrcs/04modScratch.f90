@@ -14,35 +14,35 @@ module Scratch
       !> Flag for initialization
       !> Used to check if arrays are allocated
       logical :: is_initialized = .false.
-      !> Size of integer array iaux
+      !> Size of integer array `::iaux`
       integer :: niaux = 0
-      !> Size of real array raux
+      !> Size of real array `::raux`
       integer :: nraux = 0
-      !> Dimension(niaux)
+      !> Dimension (`::niaux`)
       !> Integer scratch array
       integer,  allocatable :: iaux(:)
-      !> Dimension(niaux)
+      !> Dimension (`::niaux`)
       !> Real scratch array
       real(kind=double), allocatable :: raux(:)
    contains
-      !> Static constructor
+      !> Static constructor for `scratch::scrt`
       procedure, public, pass :: init => init_scrt
-      !> Static destructor
+      !> Static destructor for `scratch::scrt`
       procedure, public, pass :: kill => kill_scrt
-      !> Info procedure.
+      !> Info procedure for `scratch::scrt`
       procedure, public, pass :: info => info_scrt
       !> Check is scratch arrays are big enoguh
       procedure, public, pass :: check => check_scrt
       !> Check is scratch arrays are big enoguh
       procedure, public, pass :: is_enough => check_scrt
-      !> Define ibegin, iend for assign portion of arrays
+      !> Define `ibegin`, `iend` for assign portion of arrays
       procedure, public, nopass :: range
    end type scrt
 
 contains
 
    !>-------------------------------------------------------------
-   !> @details Procedure to define portion of member `iaux` or `raux`
+   !> @brief Procedure to define portion of member `::iaux` or `::raux`
    !>
    !> **Example**: partioning `raux` in two portion of length
    !> `n1` and `n2`, assign it to two two real pointer `v1` and `v2`.
@@ -73,12 +73,13 @@ contains
    end subroutine range
 
    !>-------------------------------------------------------------
-   !> @brief Static constructor.
-   !> @details Instantiate variables of type `scrt`.
+   !> @brief Static constructor for `scratch::scrt`
+   !> @details Set `::niaux` and `::nraux` and allocate
+   !> arrays `::iaux` and `::raux`.
    !>
-   !> @param[in] lun_err integer. I/O unit for error message output
-   !> @param[in] niaux   integer. Len. Integer array
-   !> @param[in] nraux   integer. Len. Real array
+   !> @param[in] lun_err integer, unit for error message output
+   !> @param[in] niaux   integer, length integer array
+   !> @param[in] nraux   integer, length real array
    !<-------------------------------------------------------------
    subroutine init_scrt(this, lun_err, niaux, nraux)
       implicit none
@@ -100,9 +101,10 @@ contains
    end subroutine init_scrt
 
    !>-------------------------------------------------------------
-   !> @details Deallocate all arrays for a var of type `scrt`
+   !> @brief Destructor for `scratch::scrt`.
+   !> @details Deallocate variables `iaux` and `raux`.
    !>
-   !> @param[in] lun: integer. I/O unit for error message output
+   !> @param[in] lun: integer, unit number for error message
    !<-----------------------------------------------------------
    subroutine kill_scrt(this, lun)
       implicit none
@@ -125,9 +127,10 @@ contains
    end subroutine kill_scrt
 
    !>-------------------------------------------------------------
-   !> @details Prints content of a variable of type `scrt`
+   !> @brief Info procedure for `scratch::scrt`
+   !> @details Prints content of a variable of type `scratch::scrt`
    !>
-   !> @param[in] lun: integer. I/O unit for error message output
+   !> @param[in] lun: integer, unit number for output message
    !<-------------------------------------------------------------
    subroutine info_scrt(this, lun)
       implicit none
@@ -143,9 +146,10 @@ contains
    end subroutine info_scrt
 
    !>-------------------------------------------------------------
-   !> @details Return false if a variable of type `scrt` is not
-   !> initialized, or it contains integer or real array that are
-   !> too small.
+   !> @brief Check is scratch arrays are big enoguh
+   !> @details Return false if a variable of type `scratch::scrt`
+   !> is not initialized, or it contains integer or real array that
+   !> are too small.
    !>
    !> @param[in] niaux   integer. Number of integer required
    !> @param[in] nraux   integer. Number of real    required
