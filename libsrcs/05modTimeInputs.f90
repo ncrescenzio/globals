@@ -501,7 +501,7 @@ contains
    !>-------------------------------------------------------------
    !> @brief Compute number of non-zero elements of `timedata::tdactual`
    !>
-   !> @param[out] result: number of non-zero elements of `timedata::tdactual`
+   !> @return (integer) number of non-zero elements of `timedata::tdactual`
    !<-------------------------------------------------------------
    function eval_ninput(this) result(ninput)
       implicit none
@@ -897,6 +897,7 @@ contains
    !> @param[in] dimdata: number of columns of `data`
    !> @param[in] ndata: number of rows of `data`
    !> @param[in] data: input data
+   !> @return (integer) number of non-zero input data
    !<-------------------------------------------------------------
    function eval_ninput_data(dimdata,ndata,data) result(ninput)
       implicit none

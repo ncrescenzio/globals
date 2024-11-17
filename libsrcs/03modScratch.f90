@@ -154,8 +154,8 @@ contains
    !>
    !> @param[in] niaux   integer. Number of integer required
    !> @param[in] nraux   integer. Number of real    required
-   !> @param[out] result logical. `True`: type initialized and big enough,
-   !>             `False` type not initialized or not big enough.
+   !> @return (logical) `True`: type initialized and big enough,
+   !>                   `False` type not initialized or not big enough.
    !<-------------------------------------------------------------
    function check_scrt(this,niaux,nraux) result (test)
       implicit none

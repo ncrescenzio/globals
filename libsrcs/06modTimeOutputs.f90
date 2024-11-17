@@ -203,7 +203,7 @@ contains
    !> @brief Compute number of data arrays (columns of
    !> `tdout::tdactual`) having non-zero norm
    !>
-   !> @param[out] result: number of data arrays (columns of
+   !> @return (integer) number of data arrays (columns of
    !> `tdout::tdactual`) having non-zero norm
    !<-------------------------------------------------------------
    function eval_ninput(this) result(ninput)
