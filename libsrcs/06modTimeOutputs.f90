@@ -6,71 +6,60 @@ module TimeOutputs
 
    private
 
-   !> structure variable containing vars for variable in time input data
-   !> (e.g., forcing functions, exponents, k(x,t)...)
-   !> up to no, only forcing function input
+   !> @brief Data structure containing values of a variable
+   !> possibly depending on time (e.g., forcing function)
+   !> @details This data structure can be used, for example, for
+   !> storing the values of a forcing function. Each colum of
+   !> `tdout::tdactual` represent the value of the forcing function
+   !> in a different point of the domain. All the values are
+   !> associated to a specific time value.
    type, public :: TDOut
-      !> O-1 flag if is initialized
+      !> Logical flag to check if object is initialized
       logical :: built
-      !> Dimension of real array
+      !> Dimension of real data array
       integer :: dimdata
-      !> Dimension of real array
+      !> Number of data arrays
       integer :: ndata
-      !> Dimension (Ndata)
-      !> Actual time values
+      !> Dimension (`::dimdata`,`::ndata`)
       real(kind=double), allocatable :: TDactual(:,:)
-      !> Time of evaluated TDactual
+      !> Time associated to data stored in `::tdactual`
       real(kind=double) :: time
-      !> SteadyTD=.true. : boundary conditions do not change during time
-      !> SteadyTD=.false. : boundary conditions do    change during time
+      !> `.true.` if data doeas not depend on time
+      !> `.false.` if data depends on time
       logical :: steadyTD
-      !> steadyTD_written=.true. : boundary conditions do not change during time
-      !> SteadyTD_written=.false. : boundary conditions do    change during time
-      logical :: steadyTD_written=.false.
+      !> `.true.` if steady state data has already
+      !> been written `.false.` otherwise
+      logical :: steadyTD_written = .false.
    contains
-      !> static constructor
-      !> (procedure public for type TDOut)
+      !> Static constructor for `timeoutputs::tdout`
       procedure, public, pass :: init => init_TD
-      !> static destructor
-      !> (procedure public for type TDOut)
+      !> Static destructor for `timeoutputs::tdout`
       procedure, public, pass :: kill => kill_TD
-      !> Info procedure.
-      !> (public procedure for type TDOut)
+      !> Info procedure for `timeoutputs::tdout`
       procedure, public, pass :: info => info_TD
-      !> Writing procedure.
-      !> (public procedure for type TDOut)
+      !> Writing procedure for `timeoutputs::tdout`
       procedure, public, pass :: write2dat => write_TD
-      !> Writing procedure.
-      !> (public procedure for type TDOut)
+      !> Write variable `::time`
       procedure, public, pass :: write_end_time
-      !!$     !> Set (read if necessary) boundary values
-      !!$     procedure, public, pass :: set => set_TD
-      !> Set number of non zero element
+      !> Compute number of data arrays (columns of
+      !> `tdout::tdactual`) having non-zero norm
       procedure, public, pass :: eval_ninput
    end type TDOut
 
 contains
 
    !>-------------------------------------------------------------
-   !> Static constructor.
-   !> (procedure public for type TDOut)
-   !> Instantiate (allocate)
-   !> and initilize (by also reading from input file)
-   !> variable of type TDOut
+   !> @brief Static constructor for `timeoutputs::tdout`
+   !> @details Initialize variables `tdout::dimdata` and `tdout::ndata`
+   !> and allocate variable `tdout::tdactual`. Set `tdout::built = .true.`
+   !> and `tdout::steadytd = .false.`
    !>
-   !> usage:
-   !>     call 'var'%init(IOfiles, InputFdescr, Ndata)
-   !>
-   !> where:
-   !> \param[in] IOfiles -> type(IOfdescr) I/O file information
-   !> \param[in] InputFdescr -> type(file) I/O file information for
-   !>                           input variable
-   !> \param[in] Ndata -> number of data to be read in
-   !>
+   !> @param[in] stderr: unit number for error message
+   !> @param[in] dimdata: value to be assigned to `tdout::dimdata`
+   !> @param[in] ndata: value to be assigned to `tdout::ndata`
    !<-------------------------------------------------------------------
    subroutine init_TD(this, stderr, dimdata, Ndata)
       implicit none
-      !vars
       class(TDOut), intent(out) :: this
       integer,      intent(in ) :: stderr
       integer,      intent(in ) :: dimdata
@@ -79,41 +68,36 @@ contains
       integer :: res
       logical :: rc
 
-      this%built=.true.
+      this%built = .true.
 
-      this%dimdata  = dimdata
-      this%ndata    = ndata
+      this%dimdata = dimdata
+      this%ndata   = ndata
 
       allocate(this%TDactual(dimdata,Ndata),stat=res)
       if(res .ne. 0) rc = IOerr(stderr, err_alloc, 'read_TD', &
          '  type TDOut member TDactual (array)',res)
-      this%TDactual=zero
+      this%TDactual = zero
 
-      this%steadyTD=.false.
+      this%steadyTD = .false.
 
    end subroutine init_TD
 
    !>-------------------------------------------------------------
-   !> Static destructor.
-   !> (procedure public for type TDOut)
-   !> deallocate all arrays for a var of type TDOut
+   !> @brief Static destructor for `timeoutputs::tdout`
+   !> @details Deallocate array `tdout::tdactual` and set
+   !> `tdout::built = .false.`
    !>
-   !> usage:
-   !>     call 'var'%kill(lun)
-   !>
-   !> where:
-   !> \param[in] lun -> integer. I/O unit for error message output.
+   !> @param[in] lun: unit number for error message
    !<-----------------------------------------------------------
    subroutine kill_TD(this, lun)
       implicit none
-      ! vars
-      class(TDOut), intent(inout):: this
-      integer, intent(in) :: lun
+      class(TDOut), intent(inout) :: this
+      integer,      intent(in   ) :: lun
       ! local vars
       integer :: res
       logical :: rc
 
-      this%built=.false.
+      this%built = .false.
       deallocate(this%TDactual)
       if (res.ne.0) rc=IOerr(lun, err_dealloc, 'kill_TD', &
          'type TDOut var TDactual')
@@ -121,48 +105,54 @@ contains
    end subroutine kill_TD
 
    !>-------------------------------------------------------------
-   !> Info procedure.
-   !> (public procedure for type TDOut)
-   !> Prints content of a variable of type TDOut
+   !> @brief Info procedure for `timeoutputs::tdout`
+   !> @details Write non-zero content of variable `tdout::tdactual`
    !>
-   !> usage:
-   !>     call 'var'%info(lun,nsample)
-   !>
-   !> where:
-   !> \param[in] lun -> integer. I/O unit for error message output.
-   !> \param[in] lun -> integer. Number of first no zero values
+   !> @param[in] lun: unit number for output message
+   !> @param[in] nsample: number of first non zero columns of
+   !> `tdout::tdactual` to print
    !<-------------------------------------------------------------
    subroutine info_TD(this, lun, nsample)
       implicit none
-      ! vars
       class(TDOut), intent(in) :: this
-      integer,         intent(in) :: lun
-      integer,         intent(in) :: nsample
-
+      integer,      intent(in) :: lun
+      integer,      intent(in) :: nsample
       ! local vars
       integer :: i,j,k
       real(kind=double) :: dnrm2
 
       write(lun,*) ' '
       write(lun,*) ' Info: TDOut structure definition:'
-
       write(lun,*) 'dimension data', this%dimdata
       write(lun,*) 'ndata         ', this%ndata
-      if( this%steadyTD       ) write(lun,*) ' Steady state'
-      if( .not. this%steadyTD ) write(lun,*) ' Not in steady state'
+
+      if (this%steadyTD     ) write(lun,*) ' Steady state'
+      if (.not.this%steadyTD) write(lun,*) ' Not in steady state'
+
       write(lun,*) ' Actual val '
       i=0
       j=0
-      do while ( (i .lt. this%ndata) .and. (j .lt. nsample) )
-      i=i+1
-      if( dnrm2(this%dimdata,this%TDactual(:,i),1).ne.zero ) then
-         j=j+1
-         write(lun,'(5(i5,e11.3))') i,(this%TDactual(k,i),k=1,this%dimdata)
-      end if
+      do while ((i.lt.this%ndata) .and. (j.lt.nsample))
+         i=i+1
+         if (dnrm2(this%dimdata,this%TDactual(:,i),1).ne.zero) then
+            j=j+1
+            write(lun,'(5(i5,e11.3))') i,(this%TDactual(k,i),k=1,this%dimdata)
+         end if
       end do
 
    end subroutine info_TD
 
+   !>-------------------------------------------------------------
+   !> @brief Write non-zero content of `tdout::tdactual` for
+   !> non steady state data
+   !> @details If `tdout::steadytd_written = .false.` this
+   !> procedure writes the columns of `tdout::tdactual`
+   !> having non-zero norm, otherwise it does nothin.
+   !> Then, if `tdout::steadytd = .true.`
+   !> set `tdout::steadytd_written = .true.`.
+   !>
+   !> @param[in] lun: unit number for output
+   !<-------------------------------------------------------------
    subroutine  write_TD(this,lun)
       implicit none
       class(TDOut),   intent(inout) :: this
@@ -173,18 +163,18 @@ contains
 
       !> if the steady steady is already written
       !> do nothing
-      if ( .not. this%steadyTD_written ) then
+      if (.not.this%steadyTD_written) then
          ninput = this%eval_ninput()
          write(lun,'(a4,1pe15.6)') 'time', this%time
          write(lun,*)  ninput
          do i = 1, this%NData
-         if ( dnrm2(this%dimdata,this%TDactual(:,i),1) > small ) then
-            write(lun,*) i, (this%TDactual(k,i), k=1,this%dimdata)
-         end if
+            if (dnrm2(this%dimdata,this%TDactual(:,i),1) > small) then
+               write(lun,*) i, (this%TDactual(k,i), k=1,this%dimdata)
+            end if
          end do
          !> if the steady steady is reached
          !> write closing sequence and change the flag
-         if ( this%steadyTD ) then
+         if (this%steadyTD) then
             write(lun,'(a4,1pe15.6)') 'time', huge
             this%steadyTD_written = .true.
          end if
@@ -192,6 +182,11 @@ contains
 
    end subroutine write_TD
 
+   !>-------------------------------------------------------------
+   !> @brief Write variable `tdout::time`
+   !>
+   !> @param[in] lun: unit number for output message
+   !<-------------------------------------------------------------
    subroutine  write_end_time(this,lun)
       implicit none
       class(TDOut),   intent(inout) :: this
@@ -204,18 +199,27 @@ contains
 
    end subroutine write_end_time
 
+   !>-------------------------------------------------------------
+   !> @brief Compute number of data arrays (columns of
+   !> `tdout::tdactual`) having non-zero norm
+   !>
+   !> @param[out] result: number of data arrays (columns of
+   !> `tdout::tdactual`) having non-zero norm
+   !<-------------------------------------------------------------
    function eval_ninput(this) result(ninput)
       implicit none
       class(TDOut), intent(in) :: this
-      integer :: ninput
+      integer                  :: ninput
       !local
       integer :: i
       real(kind=double) :: dnrm2
-      ninput= 0
-      do i = 1, this%NData
-      if ( dnrm2(this%dimdata,this%TDactual(:,i),1) > small ) then
-         ninput=ninput+1
-      end if
+
+      ninput = 0
+
+      do i = 1,this%NData
+         if (dnrm2(this%dimdata,this%TDactual(:,i),1) > small) then
+            ninput = ninput+1
+         end if
       end do
 
    end function eval_ninput

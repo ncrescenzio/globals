@@ -42,7 +42,8 @@ module Scratch
 contains
 
    !>-------------------------------------------------------------
-   !> @brief Procedure to define portion of member `::iaux` or `::raux`
+   !> @brief Procedure to define portion of member `scrt::iaux`
+   !>  or `scrt::raux`
    !>
    !> **Example**: partioning `raux` in two portion of length
    !> `n1` and `n2`, assign it to two two real pointer `v1` and `v2`.
@@ -74,8 +75,8 @@ contains
 
    !>-------------------------------------------------------------
    !> @brief Static constructor for `scratch::scrt`
-   !> @details Set `::niaux` and `::nraux` and allocate
-   !> arrays `::iaux` and `::raux`.
+   !> @details Set `scrt::niaux` and `scrt::nraux` and allocate
+   !> arrays `scrt::iaux` and `scrt::raux`.
    !>
    !> @param[in] lun_err integer, unit for error message output
    !> @param[in] niaux   integer, length integer array
@@ -102,7 +103,7 @@ contains
 
    !>-------------------------------------------------------------
    !> @brief Destructor for `scratch::scrt`.
-   !> @details Deallocate variables `iaux` and `raux`.
+   !> @details Deallocate variables `scrt::iaux` and `scrt::raux`.
    !>
    !> @param[in] lun: integer, unit number for error message
    !<-----------------------------------------------------------

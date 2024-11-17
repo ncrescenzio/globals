@@ -54,7 +54,7 @@ contains
    !>-------------------------------------------------------------
    !> @brief Static constructor for `gaussquadrature::gaussq`
    !> @details Allocate all the variables. Define variable
-   !> `::coeff1d` and `::weight1d`.
+   !> `gaussq::coeff1d` and `gaussq::weight1d`.
    !>
    !> @param[in   ] lun_err: unit number for error messages
    !> @param[in   ] ngauss: Number of Gauss points
@@ -184,7 +184,8 @@ contains
 
    !>-------------------------------------------------------------
    !> @brief Compute Gauss points on the interval \f$[a,b]\f$.
-   !> @details Define variables `::coord_ab` and `::weight_ab`.
+   !> @details Define variables `gaussq::coord_ab` and
+   !>  `gaussq::weight_ab`.
    !>
    !> @param[in   ] a: left endpoint of interval
    !> @param[in   ] b: right endpoint of interval
@@ -203,7 +204,7 @@ contains
    !> @brief Compute Gauss points of \f$[a_x,b_x] \times [a_y,b_y]\f$
    !> @details Gauss points in \f$\mathbb{R}^{2}\f$ are computed by
    !> tensorization of 1d Gauss points. Define variables
-   !> `::coord_cell` and `::weight_cell`.
+   !> `gaussq::coord_cell` and `gaussq::weight_cell`.
    !>
    !> @param[in   ] ax: left endpoint interval variable \f$x\f$.
    !> @param[in   ] bx: right endpoint interval variable \f$x\f$.
