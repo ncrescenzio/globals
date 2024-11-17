@@ -617,7 +617,7 @@ contains
    !> @param[in] dimdata: first dimension of `data`
    !> @param[in] ndata: second dimension of `data`
    !> @param[in] data: data to write
-   !> @param[in] file: file where to write data
+   !> @param[in] fileout: file where to write data
    !<-------------------------------------------------------------
    subroutine write2file(lun_err, head_body_tail_whole,&
          dimdata, ndata, data,time, fileout)
