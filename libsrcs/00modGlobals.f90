@@ -352,6 +352,7 @@ contains
       real(kind=double) :: res_avg
       ! local vars
 
+      res_avg = zero
       if (present(C)) then
          ! cell average
          select case(avg_type)
@@ -1150,7 +1151,7 @@ contains
       character(len=*), intent(in) :: str_file
       character(len=len_trim(adjustl(str_file))) :: str_dir
       !local
-      integer :: bar_pos,nstr,pbar
+      integer :: nstr, pbar
 
       str_dir(:) = ' '
 

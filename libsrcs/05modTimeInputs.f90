@@ -280,7 +280,7 @@ contains
             this%TDtime(1) = -huge
             this%TDtime(2) =  huge
          else
-            if(res .ne. 0) rc = IOerr(stderr, err_inp, 'read_TD', &
+            rc = IOerr(stderr, err_inp, 'read_TD', &
                '  file '//etb(InputFdescr%fn)//' does not esxits'//&
                ' and default not assigned ')
          end if
@@ -550,11 +550,9 @@ contains
       real(kind=double), intent(in   )           :: data(ndata)
       character(len=*),  intent(in   ), optional :: fname
       ! local vars
-      integer :: res, u_number
-      integer :: NInput
+      integer :: res
       integer :: i
       logical :: rc
-      character(len=15)  :: scratch
       character(len=15)  :: filename
 
       if (present(fname)) then
@@ -630,8 +628,7 @@ contains
       real(kind=double),  intent(in   ) :: data(dimdata,ndata)
       type(file),         intent(in   ) :: fileout
       ! local vars
-      integer :: res, u_number
-      integer :: NInput
+      integer :: res
       integer :: i,j,k,lun,nnz
       integer, allocatable :: indeces_nonzeros(:)
       logical :: rc
@@ -771,9 +768,8 @@ contains
       integer,           intent(in   ) :: lun
       character(len=*),  intent(in   ) :: fn
       ! local vars
-      integer :: res, u_number
-      integer :: NInput
-      integer :: i,j,k,nnz
+      integer :: res
+      integer :: i,j,nnz
       integer, allocatable :: indeces_nonzeros(:)
       logical :: rc
       character(len=15)  :: scratch

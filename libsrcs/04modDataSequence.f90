@@ -128,9 +128,6 @@ contains
       class(dataseq),    intent(inout) :: this
       real(kind=double), intent(in   ) :: data(this%ndata)
       real(kind=double), intent(in   ) :: time
-      !local
-      integer :: res
-      logical :: rc
 
       ! count number of data stored
       this%nstored = this%nstored + 1
@@ -162,8 +159,6 @@ contains
       real(kind=double), intent(inout) :: interpolation(this%ndata)
       integer, intent(inout)           :: info
       !local
-      logical :: rc
-      integer :: res
       integer :: i, idata, nsequence
       real(kind=double) :: coeff_langrange
 

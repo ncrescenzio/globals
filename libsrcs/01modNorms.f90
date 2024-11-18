@@ -122,7 +122,8 @@ contains
       integer :: i
       real(kind=double) :: dnrm2
 
-      if ( .not. present(scr) ) then
+      resnorm = zero
+      if (.not.present(scr)) then
          rc = IOerr(stderr, err_val, 'eval_dir_norm', &
             'scratch array not passed' )
       else

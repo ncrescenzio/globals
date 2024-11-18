@@ -102,7 +102,7 @@ contains
          real(kind=double), intent(out) :: coefcoord(ngauss)
          real(kind=double), intent(out) :: weight(ngauss)
          ! local
-         integer :: info,lwork,i,j
+         integer :: info,lwork,j
          logical :: rc
          integer :: res
          real(kind=double), allocatable :: u(:)

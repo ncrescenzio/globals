@@ -98,8 +98,8 @@ contains
       logical :: rc
 
       this%built = .false.
-      deallocate(this%TDactual)
-      if (res.ne.0) rc=IOerr(lun, err_dealloc, 'kill_TD', &
+      deallocate(this%TDactual,stat=res)
+      if (res.ne.0) rc = IOerr(lun, err_dealloc, 'kill_TD', &
          'type TDOut var TDactual')
 
    end subroutine kill_TD
@@ -191,9 +191,6 @@ contains
       implicit none
       class(TDOut),   intent(inout) :: this
       integer,        intent(in   ) :: lun
-      !local
-      integer :: i,k,ninput
-      real(kind=double) :: dnrm2
 
       write(lun,'(a4,1pe15.6)') 'time', this%time
 
