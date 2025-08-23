@@ -1,8 +1,10 @@
 # Library is specified by the user
 if (LAPACK_LIBRARIES)
-   if (NOT EXISTS ${LAPACK_LIBRARIES})
-      message(FATAL_ERROR "Lapack library does not exists: ${LAPACK_LIBRARIES}")
-   endif ()
+   foreach(lib ${LAPACK_LIBRARIES})
+      if (NOT EXISTS ${lib})
+         message(FATAL_ERROR "Lapack library does not exists: ${lib}")
+      endif ()
+   endforeach()
 
 # Find directly the library
 elseif (LAPACK_LIBRARY_DIR)
@@ -26,9 +28,11 @@ endif ()
 
 # Library is specified by the user
 if (BLAS_LIBRARIES)
-   if (NOT EXISTS ${BLAS_LIBRARIES})
-      message(FATAL_ERROR "Blas library do not exist: ${BLAS_LIBRARIES}")
-   endif ()
+   foreach(lib ${BLAS_LIBRARIES})
+      if (NOT EXISTS ${lib})
+         message(FATAL_ERROR "Blas library do not exist: ${lib}")
+      endif ()
+   endforeach()
 
 # Find directly the library
 elseif (BLAS_LIBRARY_DIR)
@@ -49,7 +53,13 @@ else ()
 
 endif ()
 
-message(VERBOSE "*** lapack libraries: ${LAPACK_LIBRARIES}")
-message(VERBOSE "*** blas libraries: ${BLAS_LIBRARIES}")
+list(REMOVE_DUPLICATES LAPACK_LIBRARIES)
+list(REMOVE_DUPLICATES BLAS_LIBRARIES)
+
+message(STATUS "*** lapack libraries: ${LAPACK_LIBRARIES}")
+message(STATUS "*** blas libraries: ${BLAS_LIBRARIES}")
 
 set(LAPACK_BLAS_LIBRARIES "${LAPACK_LIBRARIES};${BLAS_LIBRARIES}")
+
+message(STATUS "lapack found? ${LAPACK_FOUND}")
+message(STATUS "lapack found? ${lapack_FOUND}")

@@ -1,6 +1,6 @@
 # Main CMakeLists.txt file to build library "globals"
 
-cmake_minimum_required( VERSION 3.10 )
+cmake_minimum_required( VERSION 3.20 )
 
 # set the project name
 project(globals LANGUAGES Fortran VERSION 1.0)
