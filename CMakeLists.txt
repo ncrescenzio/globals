@@ -35,7 +35,7 @@ message(STATUS "*** Build type: ${CMAKE_BUILD_TYPE}")
 
 # Find lapack and blas libraries
 include(cmake/lapack_and_blas.cmake)
-# include(cmake/jsonfortran.cmake)
+include(cmake/jsonfortran.cmake)
 
 #####################################################################
 

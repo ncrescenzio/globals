@@ -4,3 +4,6 @@
 [submodule "external/test-drive"]
 	path = external/test-drive
 	url = git@github.com:fortran-lang/test-drive.git
+[submodule "external/json-fortran"]
+	path = external/json-fortran
+	url = git@github.com:jacobwilliams/json-fortran.git
