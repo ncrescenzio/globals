@@ -43,6 +43,9 @@ The following cache variables may be set to influence the library detection:
 ``TEST_DRIVE_DIR``
   Used for searching the CMake config file
 
+``TEST_DRIVE_ROOT``
+  Used for searching the CMake install directory
+
 ``TEST_DRIVE_SUBPROJECT``
   Directory to find the test-drive subproject, relative to the project root
 
@@ -100,6 +103,7 @@ foreach(method ${${_pkg}_FIND_METHOD})
       add_subdirectory(
         "${${_pkg}_SOURCE_DIR}"
         "${${_pkg}_BINARY_DIR}"
+        EXCLUDE_FROM_ALL
       )
 
       add_library("${_lib}::${_lib}" INTERFACE IMPORTED)
@@ -115,11 +119,8 @@ foreach(method ${${_pkg}_FIND_METHOD})
   endif()
 
   if("${method}" STREQUAL "fetch")
-    set(TEST_DRIVE_GIT_TAG "v0.5.0")
-    if(NOT DEFINED "${_pkg}_GIT_TAG")
-      set("_${_pkg}_GIT_TAG")
-      set("${_pkg}_GIT_TAG" "HEAD")
-    endif()
+    set("_${_pkg}_GIT_TAG")
+    set("${_pkg}_GIT_TAG" "v0.5.0")
     message(STATUS "Retrieving ${_lib} from ${_url} with tag ${${_pkg}_GIT_TAG}")
     include(FetchContent)
     FetchContent_Declare(
