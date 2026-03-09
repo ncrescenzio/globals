@@ -34,11 +34,11 @@ jobs:
         uses: actions/configure-pages@v5
       - name: Install Graphviz
         run: sudo apt-get install -y graphviz
-      - name: Install Doxygen 1.12.0
+      - name: Install Doxygen 1.16.1
         run: |
-          curl -L -O https://github.com/doxygen/doxygen/releases/download/Release_1_12_0/doxygen-1.12.0.linux.bin.tar.gz
-          tar -zvxf doxygen-1.12.0.linux.bin.tar.gz
-          cd doxygen-1.12.0 && sudo make
+          curl -L -O https://github.com/doxygen/doxygen/releases/download/Release_1_16_1/doxygen-1.16.1.linux.bin.tar.gz
+          tar -zvxf doxygen-1.16.1.linux.bin.tar.gz
+          cd doxygen-1.16.1 && sudo make
       - name: Generate Doxygen documentation
         run: |
           cd docs
