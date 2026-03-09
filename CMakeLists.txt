@@ -1,9 +1,11 @@
 # Main CMakeLists.txt file to build library "globals"
 
-cmake_minimum_required( VERSION 3.20 )
+cmake_minimum_required(VERSION 3.28)
 
 # set the project name
 project(globals LANGUAGES Fortran VERSION 1.0)
+
+include(CTest) # this automatically calls enable_testing(), except if BUILD_TESTING=OFF
 
 #####################################################################
 
@@ -27,76 +29,69 @@ elseif(NOT CMAKE_BUILD_TYPE IN_LIST CMAKE_CONFIGURATION_TYPES)
 
 endif(NOT CMAKE_BUILD_TYPE)
 
-message(STATUS "Build type: ${CMAKE_BUILD_TYPE}")
+message(STATUS "*** Build type: ${CMAKE_BUILD_TYPE}")
 
 #####################################################################
 
+# Find lapack and blas libraries
 include(cmake/lapack_and_blas.cmake)
+# include(cmake/jsonfortran.cmake)
 
 #####################################################################
 
 # Build "globals" library
-add_subdirectory(libsrcs)
-
-# Build tools
-add_subdirectory(tools)
+add_subdirectory(srcs)
+# add_subdirectory(examples)
 
 #####################################################################
 
-install(EXPORT globals-targets
-   FILE globalsTargets.cmake
-   DESTINATION lib/cmake/globals
-   COMPONENT library
-)
+# set export directory
+set(EXPORT_DIR "${CMAKE_CURRENT_BINARY_DIR}/cmake")
 
 include(CMakePackageConfigHelpers)
 
 # generate the config file that includes the exports
-configure_package_config_file(${CMAKE_CURRENT_SOURCE_DIR}/Config.cmake.in
-  "${CMAKE_CURRENT_BINARY_DIR}/globalsConfig.cmake"
-  INSTALL_DESTINATION "lib/cmake/globals"
+configure_package_config_file(
+  "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Config.cmake.in"
+  "${EXPORT_DIR}/${PROJECT_NAME}Config.cmake"
+  INSTALL_DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}"
   NO_SET_AND_CHECK_MACRO
   NO_CHECK_REQUIRED_COMPONENTS_MACRO
   )
 
 # generate the version file for the config file
 write_basic_package_version_file(
-  "${CMAKE_CURRENT_BINARY_DIR}/globalsConfigVersion.cmake"
-  VERSION "${globals_VERSION_MAJOR}.${globals_VERSION_MINOR}"
+  "${EXPORT_DIR}/${PROJECT_NAME}ConfigVersion.cmake"
+  VERSION "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}"
   COMPATIBILITY AnyNewerVersion
 )
 
 # install the generated configuration files
 install(FILES
-  ${CMAKE_CURRENT_BINARY_DIR}/globalsConfig.cmake
-  ${CMAKE_CURRENT_BINARY_DIR}/globalsConfigVersion.cmake
-  DESTINATION lib/cmake/globals
+  "${EXPORT_DIR}/${PROJECT_NAME}Config.cmake"
+  "${EXPORT_DIR}/${PROJECT_NAME}ConfigVersion.cmake"
+  DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}"
   COMPONENT library
-  )
+)
 
 # generate the export targets for the build tree
 # needs to be after the install(TARGETS) command
-export(EXPORT globals-targets
-  FILE "${CMAKE_CURRENT_BINARY_DIR}/globalsTargets.cmake"
+export(EXPORT "${PROJECT_NAME}-targets"
+   NAMESPACE "${PROJECT_NAME}::"
+   FILE "${EXPORT_DIR}/${PROJECT_NAME}Targets.cmake"
+)
+
+# install target export files
+install(EXPORT "${PROJECT_NAME}-targets"
+   NAMESPACE "${PROJECT_NAME}::"
+   FILE "${PROJECT_NAME}Targets.cmake"
+   DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}"
+   COMPONENT library
 )
 
 #####################################################################
 
-# # Add CPack to project
-# set(CPACK_PACKAGE_NAME "globals")
-# set(CPACK_PACKAGE_VENDOR "UniPD")
-# set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Fortran library for the declaration of global variables and methods")
-# set(CPACK_PACKAGE_HOMEPAGE_URL "https://github.com/ncrescenzio/globals")
-# set(CPACK_RESOURCE_FILE_README "README.md")
-# set(CPACK_PACKAGE_CONTACT "nicolo.crescenzio@math.unipd.it")
-# set(CPACK_PACKAGE_VERSION "1.0.0")
-# set(CPACK_PACKAGE_VERSION_MAJOR "1")
-# set(CPACK_PACKAGE_VERSION_MINOR "0")
-# set(CPACK_PACKAGE_VERSION_PATCH "0")
-# set(CPACK_GENERATOR "STGZ;TGZ")
-# set(CPACK_SOURCE_GENERATOR "TGZ")
-# set(CPACK_SOURCE_IGNORE_FILES ".git*;build")
-# set(CPACK_PACKAGE_DIRECTORY "packaging") # output directory in which CPack will put the packages (can be overridden using -B)
-# set(CPACK_PACKAGE_INSTALL_DIRECTORY "${CPACK_PACKAGE_NAME}.${CPACK_PACKAGE_VERSION}")
-#
-# include(CPack)
+option(GLOBALS_BUILD_TESTING "Enable testing for this project" OFF)
+if(BUILD_TESTING AND GLOBALS_BUILD_TESTING)
+   add_subdirectory(tests)
+endif(BUILD_TESTING AND GLOBALS_BUILD_TESTING)

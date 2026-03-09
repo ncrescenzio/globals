@@ -1,3 +1,6 @@
 [submodule "doc/doxygen-awesome-css"]
 	path = docs/doxygen-awesome-css
 	url = git@github.com:jothepro/doxygen-awesome-css.git
+[submodule "external/test-drive"]
+	path = external/test-drive
+	url = git@github.com:fortran-lang/test-drive.git

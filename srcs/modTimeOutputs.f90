@@ -21,7 +21,7 @@ module TimeOutputs
       !> Number of data arrays
       integer :: ndata
       !> Dimension (`::dimdata`,`::ndata`)
-      real(kind=double), allocatable :: TDactual(:,:)
+      real(kind=double), allocatable :: TDactual(:, :)
       !> Time associated to data stored in `::tdactual`
       real(kind=double) :: time
       !> `.true.` if data doeas not depend on time
@@ -61,9 +61,9 @@ contains
    subroutine init_TD(this, stderr, dimdata, Ndata)
       implicit none
       class(TDOut), intent(out) :: this
-      integer,      intent(in ) :: stderr
-      integer,      intent(in ) :: dimdata
-      integer,      intent(in ) :: Ndata
+      integer, intent(in) :: stderr
+      integer, intent(in) :: dimdata
+      integer, intent(in) :: Ndata
       ! local vars
       integer :: res
       logical :: rc
@@ -71,11 +71,11 @@ contains
       this%built = .true.
 
       this%dimdata = dimdata
-      this%ndata   = ndata
+      this%ndata = ndata
 
-      allocate(this%TDactual(dimdata,Ndata),stat=res)
-      if(res .ne. 0) rc = IOerr(stderr, err_alloc, 'read_TD', &
-         '  type TDOut member TDactual (array)',res)
+      allocate (this%TDactual(dimdata, Ndata), stat=res)
+      if (res .ne. 0) rc = IOerr(stderr, err_alloc, 'read_TD', &
+                                 '  type TDOut member TDactual (array)', res)
       this%TDactual = zero
 
       this%steadyTD = .false.
@@ -92,15 +92,15 @@ contains
    subroutine kill_TD(this, lun)
       implicit none
       class(TDOut), intent(inout) :: this
-      integer,      intent(in   ) :: lun
+      integer, intent(in) :: lun
       ! local vars
       integer :: res
       logical :: rc
 
       this%built = .false.
-      deallocate(this%TDactual,stat=res)
-      if (res.ne.0) rc = IOerr(lun, err_dealloc, 'kill_TD', &
-         'type TDOut var TDactual')
+      deallocate (this%TDactual, stat=res)
+      if (res .ne. 0) rc = IOerr(lun, err_dealloc, 'kill_TD', &
+                                 'type TDOut var TDactual')
 
    end subroutine kill_TD
 
@@ -115,28 +115,28 @@ contains
    subroutine info_TD(this, lun, nsample)
       implicit none
       class(TDOut), intent(in) :: this
-      integer,      intent(in) :: lun
-      integer,      intent(in) :: nsample
+      integer, intent(in) :: lun
+      integer, intent(in) :: nsample
       ! local vars
-      integer :: i,j,k
+      integer :: i, j, k
       real(kind=double) :: dnrm2
 
-      write(lun,*) ' '
-      write(lun,*) ' Info: TDOut structure definition:'
-      write(lun,*) 'dimension data', this%dimdata
-      write(lun,*) 'ndata         ', this%ndata
+      write (lun, *) ' '
+      write (lun, *) ' Info: TDOut structure definition:'
+      write (lun, *) 'dimension data', this%dimdata
+      write (lun, *) 'ndata         ', this%ndata
 
-      if (this%steadyTD     ) write(lun,*) ' Steady state'
-      if (.not.this%steadyTD) write(lun,*) ' Not in steady state'
+      if (this%steadyTD) write (lun, *) ' Steady state'
+      if (.not. this%steadyTD) write (lun, *) ' Not in steady state'
 
-      write(lun,*) ' Actual val '
-      i=0
-      j=0
-      do while ((i.lt.this%ndata) .and. (j.lt.nsample))
-         i=i+1
-         if (dnrm2(this%dimdata,this%TDactual(:,i),1).ne.zero) then
-            j=j+1
-            write(lun,'(5(i5,e11.3))') i,(this%TDactual(k,i),k=1,this%dimdata)
+      write (lun, *) ' Actual val '
+      i = 0
+      j = 0
+      do while ((i .lt. this%ndata) .and. (j .lt. nsample))
+         i = i + 1
+         if (dnrm2(this%dimdata, this%TDactual(:, i), 1) .ne. zero) then
+            j = j + 1
+            write (lun, '(5(i5,e11.3))') i, (this%TDactual(k, i), k=1, this%dimdata)
          end if
       end do
 
@@ -153,29 +153,29 @@ contains
    !>
    !> @param[in] lun: unit number for output
    !<-------------------------------------------------------------
-   subroutine  write_TD(this,lun)
+   subroutine write_TD(this, lun)
       implicit none
-      class(TDOut),   intent(inout) :: this
-      integer,        intent(in   ) :: lun
+      class(TDOut), intent(inout) :: this
+      integer, intent(in) :: lun
       !local
-      integer :: i,k,ninput
+      integer :: i, k, ninput
       real(kind=double) :: dnrm2
 
       !> if the steady steady is already written
       !> do nothing
-      if (.not.this%steadyTD_written) then
+      if (.not. this%steadyTD_written) then
          ninput = this%eval_ninput()
-         write(lun,'(a4,1pe15.6)') 'time', this%time
-         write(lun,*)  ninput
+         write (lun, '(a4,1pe15.6)') 'time', this%time
+         write (lun, *) ninput
          do i = 1, this%NData
-            if (dnrm2(this%dimdata,this%TDactual(:,i),1) > small) then
-               write(lun,*) i, (this%TDactual(k,i), k=1,this%dimdata)
+            if (dnrm2(this%dimdata, this%TDactual(:, i), 1) > small) then
+               write (lun, *) i, (this%TDactual(k, i), k=1, this%dimdata)
             end if
          end do
          !> if the steady steady is reached
          !> write closing sequence and change the flag
          if (this%steadyTD) then
-            write(lun,'(a4,1pe15.6)') 'time', huge
+            write (lun, '(a4,1pe15.6)') 'time', huge
             this%steadyTD_written = .true.
          end if
       end if
@@ -187,12 +187,12 @@ contains
    !>
    !> @param[in] lun: unit number for output message
    !<-------------------------------------------------------------
-   subroutine  write_end_time(this,lun)
+   subroutine write_end_time(this, lun)
       implicit none
-      class(TDOut),   intent(inout) :: this
-      integer,        intent(in   ) :: lun
+      class(TDOut), intent(inout) :: this
+      integer, intent(in) :: lun
 
-      write(lun,'(a4,1pe15.6)') 'time', this%time
+      write (lun, '(a4,1pe15.6)') 'time', this%time
 
    end subroutine write_end_time
 
@@ -213,9 +213,9 @@ contains
 
       ninput = 0
 
-      do i = 1,this%NData
-         if (dnrm2(this%dimdata,this%TDactual(:,i),1) > small) then
-            ninput = ninput+1
+      do i = 1, this%NData
+         if (dnrm2(this%dimdata, this%TDactual(:, i), 1) > small) then
+            ninput = ninput + 1
          end if
       end do
 

@@ -60,6 +60,3 @@ message(STATUS "*** lapack libraries: ${LAPACK_LIBRARIES}")
 message(STATUS "*** blas libraries: ${BLAS_LIBRARIES}")
 
 set(LAPACK_BLAS_LIBRARIES "${LAPACK_LIBRARIES};${BLAS_LIBRARIES}")
-
-message(STATUS "lapack found? ${LAPACK_FOUND}")
-message(STATUS "lapack found? ${lapack_FOUND}")

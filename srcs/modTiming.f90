@@ -9,36 +9,36 @@ module Timing
 
    type, public :: tim
       !> Actual value of wall-clock-time
-      real(kind=double) :: wct = zero
+      real(kind=double) :: wct
       !> Actual value of user (cpu) time (summed across threads)
-      real(kind=double) :: usr = zero
+      real(kind=double) :: usr
       !> Cumulated value of wall-clock-time
-      real(kind=double) :: CUMwct = zero
+      real(kind=double) :: CUMwct
       !> Cumulated value of user (cpu) time (summed across threads)
-      real(kind=double) :: CUMusr = zero
+      real(kind=double) :: CUMusr
       !> Status variable: both command and stutus
       !> can be: `start`, `stop`, `stac`, `accumulate` and `reset`.
       !> Can be abbreviated using the first 3 characters of the word.
       character(len=15) :: status
    contains
-      !> Static constructor (public for type `tim`)
+      !> Static constructor (public for type `timing::tim`)
       procedure, public, pass :: init => tim_construct
-      !> Static destructor (public for type `tim`)
+      !> Static destructor (public for type `timing::tim`)
       procedure, public, pass :: kill => tim_destroy
-      !> Outputs the content of the variable (public for type `tim`)
+      !> Outputs the content of the variable (public for type `timing::tim`)
       procedure, public, pass :: info => tim_print
-      !> Sets the current `tim` vars (public for type `tim`)
+      !> Sets the current `timing::tim` vars (public for type `timing::tim`)
       procedure, public, pass :: set => tim_set
    end type tim
 
 contains
 
    !>-------------------------------------------------------------
-   !> @brief Static constructor (procedure public for type `tim`)
+   !> @brief Static constructor (procedure public for type `timing::tim`)
    !> @details Instantiate (allocate if necessary) and initilize
-   !> (by also reading from input file) variable of type `tim`.
+   !> (by also reading from input file) variable of type `timing::tim`.
    !>
-   !> @param[out] this Object of type `tim` calling the constructor
+   !> @param[out] this Object of type `timing::tim` calling the constructor
    !<-------------------------------------------------------------
    subroutine tim_construct(this)
       implicit none
@@ -47,28 +47,23 @@ contains
       this%wct = zero
       this%usr = zero
       this%status = "start"
-      this%CUMusr=zero
-      this%CUMwct=zero
 
    end subroutine tim_construct
 
    !>-------------------------------------------------------------
-   !> @brief Static destructor (procedure public for type `tim`).
+   !> @brief Static destructor (procedure public for type `timing::tim`).
    !<-----------------------------------------------------------
    subroutine Tim_destroy(this)
       implicit none
       class(tim), intent(inout) :: this
 
-      this%wct = zero
-      this%usr = zero
-      this%CUMusr=zero
-      this%CUMwct=zero
+      this%status = 'destroy'
 
    end subroutine Tim_destroy
 
    !>-------------------------------------------------------------
-   !> @brief Info procedure (public procedure for type `tim`).
-   !> @details Prints content of a variable of type `tim`.
+   !> @brief Info procedure (public procedure for type `timing::tim`).
+   !> @details Prints content of a variable of type `timing::tim`.
    !>
    !> @param[in] lun: integer. output unit
    !> @param[in] add_msg: character, optional.
@@ -84,34 +79,34 @@ contains
       integer, intent(in) :: lun
       character(len=*), optional, intent(in) :: add_msg, add_msg1, add_msg2
       !local vars
-      character(len=256) :: msg,msg1,msg2
+      character(len=256) :: msg, msg1, msg2
 
       if (present(add_msg)) then
-         msg=add_msg
+         msg = add_msg
       else
-         msg=''
+         msg = ''
       end if
 
       if (present(add_msg1)) then
-         msg1=add_msg1
+         msg1 = add_msg1
       else
-         msg1=''
+         msg1 = ''
       end if
 
       if (present(add_msg2)) then
-         msg2=add_msg2
+         msg2 = add_msg2
       else
-         msg2=''
+         msg2 = ''
       end if
 
-      write(lun,'(a,f10.2,a,f10.2,a)') trim(msg)//' WCT: ',this%CUMwct,&
-         ' (s) '//trim(msg1)//'; USR: ',this%CUMusr,' (s) '//trim(msg2)
+      write (lun, '(a,f7.3,a,f7.3,a)') trim(msg)//' WCT: ', this%CUMwct, &
+         ' (s) '//trim(msg1)//'; USR: ', this%CUMusr, ' (s) '//trim(msg2)
 
    end subroutine Tim_print
 
    !>-------------------------------------------------------------
-   !> @brief Set procedure (public procedure for type `tim`).
-   !> Sets the values of var of type `tim`.
+   !> @brief Set procedure (public procedure for type `timing::tim`).
+   !> Sets the values of var of type `timing::tim`.
    !>
    !> @param[in] code: character, optional.
    !>  Commands to start/stop/reset/accumulate stopwatch.
@@ -129,18 +124,18 @@ contains
       integer :: itime, tick_per_sec
       character(len=3) :: com
 
-      call system_clock(itime,tick_per_sec)
+      call system_clock(itime, tick_per_sec)
 
       if (present(code)) then
-         com=code(1:3)
+         com = code(1:3)
       else
          select case (this%status(1:3))
          case ('sta')
-            com='sta'
+            com = 'sta'
          case ('sto')
-            com='sto'
+            com = 'sto'
          case default
-            com='non'
+            com = 'non'
          end select
       end if
       select case (com)
@@ -148,20 +143,20 @@ contains
          !  initial setting
          call cpu_time(this%usr)
          call system_clock(itime)
-         this%wct=dble(itime)/dble(tick_per_sec)
-         this%status='sto'
+         this%wct = dble(itime)/dble(tick_per_sec)
+         this%status = 'sto'
       case ('sto')
          !  periodic measure
          call cpu_time(time)
          this%usr = time - this%usr
          call system_clock(itime)
-         this%wct=dble(itime)/dble(tick_per_sec)-this%wct
-         this%CUMusr=this%CUMusr+this%usr
-         this%CUMwct=this%CUMwct+this%wct
-         this%status='sta'
+         this%wct = dble(itime)/dble(tick_per_sec) - this%wct
+         this%CUMusr = this%CUMusr + this%usr
+         this%CUMwct = this%CUMwct + this%wct
+         this%status = 'sta'
       case default
-         this%usr=-999
-         this%wct=-999
+         this%usr = -999
+         this%wct = -999
       end select
 
    end subroutine Tim_set

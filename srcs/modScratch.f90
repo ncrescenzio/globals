@@ -10,7 +10,7 @@ module Scratch
 
    private
 
-   type,  public :: scrt
+   type, public :: scrt
       !> Flag for initialization
       !> Used to check if arrays are allocated
       logical :: is_initialized = .false.
@@ -20,7 +20,7 @@ module Scratch
       integer :: nraux = 0
       !> Dimension (`::niaux`)
       !> Integer scratch array
-      integer,  allocatable :: iaux(:)
+      integer, allocatable :: iaux(:)
       !> Dimension (`::niaux`)
       !> Real scratch array
       real(kind=double), allocatable :: raux(:)
@@ -62,14 +62,14 @@ contains
    !>                       It cointains the end position of previous
    !>                       array or it must begin initialize to zero.
    !<----------------------------------------------------------------
-   subroutine range(size,ibegin,iend)
+   subroutine range(size, ibegin, iend)
       implicit none
       integer, intent(in)    :: size
       integer, intent(out)   :: ibegin
       integer, intent(inout) :: iend
 
-      ibegin = iend  + 1
-      iend   = ibegin + size - 1
+      ibegin = iend + 1
+      iend = ibegin + size - 1
 
    end subroutine range
 
@@ -85,9 +85,9 @@ contains
    subroutine init_scrt(this, lun_err, niaux, nraux)
       implicit none
       class(scrt), intent(inout) :: this
-      integer,     intent(in   ) :: lun_err
-      integer,     intent(in   ) :: niaux
-      integer,     intent(in   ) :: nraux
+      integer, intent(in) :: lun_err
+      integer, intent(in) :: niaux
+      integer, intent(in) :: nraux
       !local
       integer :: res
       logical :: rc
@@ -95,9 +95,9 @@ contains
       this%is_initialized = .true.
       this%niaux = niaux
       this%nraux = nraux
-      allocate(this%iaux(this%niaux),this%raux(this%nraux),stat=res)
-      if(res .ne. 0) rc = IOerr(lun_err, err_alloc, 'init_aux', &
-         ' array iaux raux',res)
+      allocate (this%iaux(this%niaux), this%raux(this%nraux), stat=res)
+      if (res .ne. 0) rc = IOerr(lun_err, err_alloc, 'init_aux', &
+                                 ' array iaux raux', res)
 
    end subroutine init_scrt
 
@@ -110,20 +110,20 @@ contains
    subroutine kill_scrt(this, lun)
       implicit none
       class(scrt), intent(inout) :: this
-      integer,     intent(in   ) :: lun
+      integer, intent(in) :: lun
       ! local vars
       integer :: res
       logical :: rc
 
       if (this%is_initialized) then
-         deallocate(this%iaux,this%raux,stat=res)
-         if (res.ne.0) rc=IOerr(lun, err_dealloc, 'kill_scrt', &
-            'dealloc fail for type scrt member iaux raux',res)
+         deallocate (this%iaux, this%raux, stat=res)
+         if (res .ne. 0) rc = IOerr(lun, err_dealloc, 'kill_scrt', &
+                                    'dealloc fail for type scrt member iaux raux', res)
       end if
 
       this%is_initialized = .false.
-      this%niaux=0
-      this%nraux=0
+      this%niaux = 0
+      this%nraux = 0
 
    end subroutine kill_scrt
 
@@ -136,12 +136,12 @@ contains
    subroutine info_scrt(this, lun)
       implicit none
       class(scrt), intent(in) :: this
-      integer    , intent(in) :: lun
+      integer, intent(in) :: lun
 
-      if ( this%is_initialized ) then
-         write(lun,*) 'niaux = ', this%niaux, 'nraux = ', this%nraux
+      if (this%is_initialized) then
+         write (lun, *) 'niaux = ', this%niaux, 'nraux = ', this%nraux
       else
-         write(lun,*) 'Scratch type not initialized'
+         write (lun, *) 'Scratch type not initialized'
       end if
 
    end subroutine info_scrt
@@ -157,17 +157,17 @@ contains
    !> @return (logical) `True`: type initialized and big enough,
    !>                   `False` type not initialized or not big enough.
    !<-------------------------------------------------------------
-   function check_scrt(this,niaux,nraux) result (test)
+   function check_scrt(this, niaux, nraux) result(test)
       implicit none
       class(scrt), intent(in) :: this
-      integer,     intent(in) :: niaux
-      integer,     intent(in) :: nraux
+      integer, intent(in) :: niaux
+      integer, intent(in) :: nraux
       logical :: test
 
       test = .true.
-      if ( niaux .gt. this%niaux .or. &
-         nraux .gt. this%nraux .or. &
-         .not. this%is_initialized) then
+      if (niaux .gt. this%niaux .or. &
+          nraux .gt. this%nraux .or. &
+          .not. this%is_initialized) then
          test = .false.
       end if
 

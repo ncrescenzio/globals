@@ -27,14 +27,14 @@ module DataSequence
    !> The integer `::istored` says which is the last slot were
    !> data has been stored.
    !<-------------------------------------------------------------
-   type , public :: dataseq
+   type, public :: dataseq
       !> Data size
       integer ::  ndata
       !> Number of time instants
       integer ::  nsequence
       !> Dimension (`::ndata`,`::nsequence`)
       !> Data stored
-      real(kind=double), allocatable  :: datas(:,:)
+      real(kind=double), allocatable  :: datas(:, :)
       !> Dimension (`::nsequence`)
       !> Times for which data is stored
       real(kind=double), allocatable  :: times(:)
@@ -44,13 +44,13 @@ module DataSequence
       integer :: nstored
    contains
       !> Static constructor for `datasequence::dataseq`
-      procedure, public , pass :: init => init_dataseq
+      procedure, public, pass :: init => init_dataseq
       !> Static destructor for `datasequence::dataseq`
-      procedure, public , pass :: kill => kill_dataseq
+      procedure, public, pass :: kill => kill_dataseq
       !> Add new data to the database
-      procedure, public , pass :: fill => fill_dataseq
+      procedure, public, pass :: fill => fill_dataseq
       !> Lagrange interpolation in time of stored data
-      procedure, public , pass :: lagrange_interpolation
+      procedure, public, pass :: lagrange_interpolation
    end type dataseq
 
 contains
@@ -67,21 +67,21 @@ contains
    subroutine init_dataseq(this, lun_err, ndata, nsequence)
       implicit none
       class(dataseq), intent(inout) :: this
-      integer,        intent(in   ) :: lun_err
-      integer,        intent(in   ) :: ndata
-      integer,        intent(in   ) :: nsequence
+      integer, intent(in) :: lun_err
+      integer, intent(in) :: ndata
+      integer, intent(in) :: nsequence
       !local
       integer :: res
       logical :: rc
 
-      this%ndata     = ndata
+      this%ndata = ndata
       this%nsequence = nsequence
-      allocate(&
-         this%datas(ndata,nsequence),&
-         this%times(nsequence),&
+      allocate ( &
+         this%datas(ndata, nsequence), &
+         this%times(nsequence), &
          stat=res)
-      if (res.ne.0) rc = IOerr(lun_err, err_alloc, 'init_dataseq', &
-         ' type dataseq member datas times')
+      if (res .ne. 0) rc = IOerr(lun_err, err_alloc, 'init_dataseq', &
+                                 ' type dataseq member datas times')
       !
       !  this%istored = 0 so at the first data is stored in this%data(:,1)
       !
@@ -99,21 +99,21 @@ contains
    subroutine kill_dataseq(this, lun_err)
       implicit none
       class(dataseq), intent(inout) :: this
-      integer, intent(in   )        :: lun_err
+      integer, intent(in)        :: lun_err
       !local
       integer :: res
       logical :: rc
 
-      deallocate(&
-         this%datas,&
+      deallocate ( &
+         this%datas, &
          stat=res)
-      if(res .ne. 0) rc = IOerr(lun_err, err_dealloc, 'init_dataseq', &
-         ' type dataseq member datas')
-      deallocate(&
-         this%times,&
+      if (res .ne. 0) rc = IOerr(lun_err, err_dealloc, 'init_dataseq', &
+                                 ' type dataseq member datas')
+      deallocate ( &
+         this%times, &
          stat=res)
-      if (res.ne.0) rc = IOerr(lun_err, err_dealloc, 'init_dataseq', &
-         ' type dataseq membertimes')
+      if (res .ne. 0) rc = IOerr(lun_err, err_dealloc, 'init_dataseq', &
+                                 ' type dataseq membertimes')
 
    end subroutine kill_dataseq
 
@@ -125,9 +125,9 @@ contains
    !<---------------------------------------------------------------------
    subroutine fill_dataseq(this, data, time)
       implicit none
-      class(dataseq),    intent(inout) :: this
-      real(kind=double), intent(in   ) :: data(this%ndata)
-      real(kind=double), intent(in   ) :: time
+      class(dataseq), intent(inout) :: this
+      real(kind=double), intent(in) :: data(this%ndata)
+      real(kind=double), intent(in) :: time
 
       ! count number of data stored
       this%nstored = this%nstored + 1
@@ -135,11 +135,11 @@ contains
 
       ! select slot for next data
       this%istored = this%istored + 1
-      if (this%istored.eq.(this%nsequence+1))  this%istored = 1
+      if (this%istored .eq. (this%nsequence + 1)) this%istored = 1
 
       ! store data in istored slot
-      this%datas(:,this%istored) = data(:)
-      this%times(this%istored)   = time
+      this%datas(:, this%istored) = data(:)
+      this%times(this%istored) = time
 
    end subroutine fill_dataseq
 
@@ -163,7 +163,7 @@ contains
       real(kind=double) :: coeff_langrange
 
       info = 0
-      if (this%nstored.ne.this%nsequence) then
+      if (this%nstored .ne. this%nsequence) then
          info = -1
          return
       end if
@@ -171,38 +171,38 @@ contains
       nsequence = this%nsequence
 
       interpolation(:) = zero
-      do i = 1,nsequence
+      do i = 1, nsequence
          ! find data
          idata = this%istored + i - 1
-         if( idata > nsequence ) then
+         if (idata > nsequence) then
             idata = idata - nsequence
          end if
-         write(*,*) i, idata
+         write (*, *) i, idata
 
          ! eval i-th lagrnagian coefficeint
          coeff_langrange = eval_coeff(idata, nsequence, this%times, time)
          ! add  i-th data
-         interpolation (:) = interpolation (:) + &
-            coeff_langrange * this%datas(:, idata)
+         interpolation(:) = interpolation(:) + &
+                            coeff_langrange*this%datas(:, idata)
       end do
 
    contains
 
       function eval_coeff(idata, ntimes, times, time) result(out)
          implicit none
-         integer, intent(in )             :: idata
-         integer, intent(in )             :: ntimes
+         integer, intent(in)             :: idata
+         integer, intent(in)             :: ntimes
          ! this times are not sorted but the algorithm works anyway
-         real(kind=double), intent(in   ) :: times(ntimes)
-         real(kind=double), intent(in   ) :: time
+         real(kind=double), intent(in) :: times(ntimes)
+         real(kind=double), intent(in) :: time
          real(kind=double) :: out
          ! local
          integer :: i
 
          out = one
          do i = 1, ntimes
-            if ( i .ne. idata ) then
-               out = out * ( time - times(i) ) / ( times(idata) - times(i) )
+            if (i .ne. idata) then
+               out = out*(time - times(i))/(times(idata) - times(i))
             end if
          end do
 

@@ -22,11 +22,11 @@ module KindDeclaration
    real(kind=double), parameter :: onesixth = 1.0d0/6.0d0
    real(kind=double), parameter :: verysmall = 1.0d-40
    real(kind=double), parameter :: small = 1.0d-15
+   real(kind=double), parameter :: smallenough = 1.0d-10
    real(kind=double), parameter :: large = 1.0d10
    real(kind=double), parameter :: huge = 1.0d30
-   real(kind=double), parameter :: pigreco = 4.0d0*atan(one)
 
-   ! double parameters of physical constants
+   real(kind=double), parameter :: pigreco = 4.0d0*atan(one)
    real(kind=double), parameter :: grav = 9.806d0
    real(kind=double), parameter :: zerodepth = 1.0d-9
    real(kind=double), parameter :: noflux = 1.0d-10

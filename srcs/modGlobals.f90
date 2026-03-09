@@ -16,35 +16,35 @@ module Globals
    implicit none
 
    !> File or directory does not exist
-   integer, parameter :: wrn_IO      = 1
+   integer, parameter :: wrn_IO = 1
    !> Error in input/outour parameter
-   integer, parameter :: wrn_val     = 3
+   integer, parameter :: wrn_val = 3
    !> Error reading file
-   integer, parameter :: wrn_read    = 11
+   integer, parameter :: wrn_read = 11
    !> Error writing file
-   integer, parameter :: wrn_write   = 21
+   integer, parameter :: wrn_write = 21
    !> Error in input parameter
-   integer, parameter :: wrn_inp     = 13
+   integer, parameter :: wrn_inp = 13
    !> Error in outour parameter
-   integer, parameter :: wrn_out     = 23
+   integer, parameter :: wrn_out = 23
    !> File or directory does not exist
-   integer, parameter :: err_IO      = 101
+   integer, parameter :: err_IO = 101
    !> Error in input parameter
-   integer, parameter :: err_inp     = 111
+   integer, parameter :: err_inp = 111
    !> Error in outour parameter
-   integer, parameter :: err_out     = 121
+   integer, parameter :: err_out = 121
    !> Error allocation failed
-   integer, parameter :: err_alloc   = 131
+   integer, parameter :: err_alloc = 131
    !> Error deallocation failed
    integer, parameter :: err_dealloc = 141
    !> Error VTK library
-   integer, parameter :: err_vtk     = 151
+   integer, parameter :: err_vtk = 151
    !> Error reading file
-   integer, parameter :: err_read    = 161
+   integer, parameter :: err_read = 161
    !> Error writing file
-   integer, parameter :: err_write   = 171
+   integer, parameter :: err_write = 171
    !> Error in parameter value
-   integer, parameter :: err_val     = 201
+   integer, parameter :: err_val = 201
 
    type, public :: file
       !> Logical flag to check if file exists
@@ -52,9 +52,9 @@ module Globals
       !> I/O unit number
       integer :: lun
       !> File or directory name
-      character (len=256) :: fn
+      character(len=256) :: fn
       !> Local file or directory name
-      character (len=256) :: fnloc
+      character(len=256) :: fnloc
       !  integer(hid_t)  :: hdf5_id=0 !< ID numbe for corresponding dataset in h5df
    contains
       !> Static constructor for `globals::file`
@@ -86,46 +86,46 @@ contains
    !<-------------------------------------------------------------
    function IOerr(lun, errno, call_proc, add_msg, add_int) result(rc)
       implicit none
-      integer,          intent(in)           :: lun
-      integer,          intent(in)           :: errno
+      integer, intent(in)           :: lun
+      integer, intent(in)           :: errno
       character(len=*), intent(in)           :: call_proc
       character(len=*), intent(in), optional :: add_msg
-      integer,          intent(in), optional :: add_int
+      integer, intent(in), optional :: add_int
       logical  :: rc
       ! local vars
       character(len=256) :: msg
       integer :: int
 
       if (present(add_msg)) then
-         msg=trim(add_msg)
-         if(present(add_int)) then
-            int=add_int
+         msg = trim(add_msg)
+         if (present(add_int)) then
+            int = add_int
          else
             int = 0
          end if
       else
-         msg=''
+         msg = ''
          int = 0
       end if
-      write(lun,*) ''
-      write(lun,*) ' *************'
-      if (errno.gt.100) then
-         write(lun,fmt=100) '  SEVERE ERROR:'
-         write(lun,fmt=101) ' in procedure: ',trim(call_proc)
-         write(lun,fmt=101) trim(errmsg(errno, trim(msg), int))
+      write (lun, *) ''
+      write (lun, *) ' *************'
+      if (errno .gt. 100) then
+         write (lun, fmt=100) '  SEVERE ERROR:'
+         write (lun, fmt=101) ' in procedure: ', trim(call_proc)
+         write (lun, fmt=101) trim(errmsg(errno, trim(msg), int))
          stop 'EXECUTION TERMINATED IN PROC IOerr'
-      else if (errno.gt.0) then
-         write(lun,fmt=100) ' WARNING ERROR:'
-         write(lun,fmt=101) 'in procedure: ',trim(call_proc)
-         write(lun,fmt=101) etb((errmsg(errno, trim(msg), int)))
-         rc=.true.
+      else if (errno .gt. 0) then
+         write (lun, fmt=100) ' WARNING ERROR:'
+         write (lun, fmt=101) 'in procedure: ', trim(call_proc)
+         write (lun, fmt=101) etb((errmsg(errno, trim(msg), int)))
+         rc = .true.
       else
-         write(lun,fmt=100) ' IO ERROR NUMBER not found'
+         write (lun, fmt=100) ' IO ERROR NUMBER not found'
          stop 'EXECUTION TERMINATED IN PROC IOerr'
       end if
 
-      100 format(1x,a,1x,i5)
-      101 format(5(1x,a))
+100   format(1x, a, 1x, i5)
+101   format(5(1x, a))
 
    contains
 
@@ -139,34 +139,34 @@ contains
       !<-------------------------------------------------------------
       function errmsg(errno, addmsg, addint) result(msg)
          implicit none
-         integer,          intent(in) :: errno
+         integer, intent(in) :: errno
          character(len=*), intent(in) :: addmsg
-         integer,          intent(in) :: addint
+         integer, intent(in) :: addint
          character(len=256) :: msg
          ! local vars
          character(len=5) :: rdwr
 
-         if (addint.eq.0) then
-            rdwr=''
+         if (addint .eq. 0) then
+            rdwr = ''
          else
-            write(rdwr,'(i5)') addint
+            write (rdwr, '(i5)') addint
          end if
 
          select case (errno)
          case (wrn_IO) ! file/dir not found but continues execution
-            msg='File or Directory '//trim(addmsg)//' (unit '//rdwr//') does not exist.'
+            msg = 'File or Directory '//trim(addmsg)//' (unit '//rdwr//') does not exist.'
          case (wrn_read) ! error in reading file
-            msg='Error Reading File '//trim(addmsg)//' (unit '//rdwr//')'
+            msg = 'Error Reading File '//trim(addmsg)//' (unit '//rdwr//')'
          case (wrn_write) ! error in writing file
-            msg='Error Writing File '//trim(addmsg)//' (unit '//rdwr//')'
+            msg = 'Error Writing File '//trim(addmsg)//' (unit '//rdwr//')'
          case (wrn_val) ! error in inputs data
-            msg='Error In Input/Output Parameter '//trim(addmsg)//' (info='//rdwr//')'
+            msg = 'Error In Input/Output Parameter '//trim(addmsg)//' (info='//rdwr//')'
          case (wrn_inp) ! error in inputs data
-            msg='Error In Input Parameter '//trim(addmsg)//rdwr//')'
+            msg = 'Error In Input Parameter '//trim(addmsg)//rdwr//')'
          case (wrn_out) ! error in output
-            msg='Error In Output Parameter '//trim(addmsg)//rdwr//')'
+            msg = 'Error In Output Parameter '//trim(addmsg)//rdwr//')'
          case (err_IO) ! file/dir not found but stops execution
-            msg='File or Directory '//trim(addmsg)//' (unit '//rdwr//') does not exist.'
+            msg = 'File or Directory '//trim(addmsg)//' (unit '//rdwr//') does not exist.'
          case (err_read) ! error reading a number in input
             msg = '    ...error reading file '//trim(addmsg)//' (iostat='//rdwr//')'
          case (err_write) ! error writing a number in input
@@ -207,9 +207,9 @@ contains
       integer :: i
 
       do i = 1, len(strIn)
-         select case(strIn(i:i))
-            case("a":"z")
-               strOut(i:i) = achar(iachar(strIn(i:i))-32)
+         select case (strIn(i:i))
+         case ("a":"z")
+            strOut(i:i) = achar(iachar(strIn(i:i)) - 32)
          end select
       end do
 
@@ -232,11 +232,11 @@ contains
       integer :: i
 
       do i = 1, len(strIn)
-         select case(strIn(i:i))
-            case("A":"Z")
-               strOut(i:i) = achar(iachar(strIn(i:i))+32)
-            case default
-               strOut(i:i) = strIn(i:i)
+         select case (strIn(i:i))
+         case ("A":"Z")
+            strOut(i:i) = achar(iachar(strIn(i:i)) + 32)
+         case default
+            strOut(i:i) = strIn(i:i)
          end select
       end do
    end function to_lower
@@ -252,7 +252,7 @@ contains
       character(len=*), intent(in) :: strIn
       character(len=len_trim(adjustl(strIn))) :: strOut
 
-      strOut=trim(adjustl(strIn))
+      strOut = trim(adjustl(strIn))
 
    end function etb
 
@@ -273,17 +273,17 @@ contains
       character(len=len_trim(adjustl(strIn))) :: strOut
       ! local vars
       character(len=1) :: strloc
-      integer :: i,j
+      integer :: i, j
 
-      do i=1,len_trim(adjustl(strIn))
-         strloc=strIn(i:i)
-         if (strloc .eq. '!' .or. strloc.eq.'%' .or. strloc.eq.'#') then
-            do j=i,len_trim(adjustl(strIn))
-               strOut(j:j)=' '
+      do i = 1, len_trim(adjustl(strIn))
+         strloc = strIn(i:i)
+         if (strloc .eq. '!' .or. strloc .eq. '%' .or. strloc .eq. '#') then
+            do j = i, len_trim(adjustl(strIn))
+               strOut(j:j) = ' '
             end do
             exit
          else
-            strOut(i:i)=strloc
+            strOut(i:i) = strloc
          end if
       end do
 
@@ -301,9 +301,9 @@ contains
    !> @param[in] vec3: vector to be averaged (optional)
    !> @return real(double). dimension(3), averaged vector
    !<-------------------------------------------------------------
-   function  avg_vec3(avg_type, vecA, vecB, vecC) result (res_avg)
+   function avg_vec3(avg_type, vecA, vecB, vecC) result(res_avg)
       implicit none
-      integer,           intent(in)           :: avg_type
+      integer, intent(in)           :: avg_type
       real(kind=double), intent(in)           :: vecA(3)
       real(kind=double), intent(in)           :: vecB(3)
       real(kind=double), intent(in), optional :: vecC(3)
@@ -313,19 +313,19 @@ contains
 
       if (present(vecC)) then
          ! cell average
-         select case(avg_type)
-            case(0)
-               do i=1,3
-                  res_avg(i) = avg_scal(avg_type,vecA(i),vecB(i),vecC(i))
-               end do
+         select case (avg_type)
+         case (0)
+            do i = 1, 3
+               res_avg(i) = avg_scal(avg_type, vecA(i), vecB(i), vecC(i))
+            end do
          end select
       else
          ! edge average
-         select case(avg_type)
-            case(0)
-               do i=1,3
-                  res_avg(i) = avg_scal(avg_type,vecA(i),vecB(i))
-               end do
+         select case (avg_type)
+         case (0)
+            do i = 1, 3
+               res_avg(i) = avg_scal(avg_type, vecA(i), vecB(i))
+            end do
          end select
       end if
 
@@ -343,9 +343,9 @@ contains
    !> @param[in] C: scalar to be averaged (optional)
    !> @return real(double), average
    !<-------------------------------------------------------------
-   function  avg_scal(avg_type, A, B, C) result (res_avg)
+   function avg_scal(avg_type, A, B, C) result(res_avg)
       implicit none
-      integer,           intent(in)           :: avg_type
+      integer, intent(in)           :: avg_type
       real(kind=double), intent(in)           :: A
       real(kind=double), intent(in)           :: B
       real(kind=double), intent(in), optional :: C
@@ -355,15 +355,15 @@ contains
       res_avg = zero
       if (present(C)) then
          ! cell average
-         select case(avg_type)
-         case(0)
-            res_avg = onethird*(A+B+C)
+         select case (avg_type)
+         case (0)
+            res_avg = onethird*(A + B + C)
          end select
       else
          ! edge average
-         select case(avg_type)
-         case(0)
-            res_avg = onehalf*(A+B)
+         select case (avg_type)
+         case (0)
+            res_avg = onehalf*(A + B)
          end select
       end if
 
@@ -376,15 +376,15 @@ contains
    !> @param[in] vec2: vector
    !> @return real(`::double`), dimension(3), vector
    !<-------------------------------------------------------------
-   function  cross(vecA, vecB) result (res_cross)
+   function cross(vecA, vecB) result(res_cross)
       implicit none
       real(kind=double), intent(in) :: vecA(3)
       real(kind=double), intent(in) :: vecB(3)
       real(kind=double) :: res_cross(3)
 
-      res_cross(1) = vecA(2)*vecB(3)-vecA(3)*vecB(2)
-      res_cross(2) = vecA(3)*vecB(1)-vecA(1)*vecB(3)
-      res_cross(3) = vecA(1)*vecB(2)-vecA(2)*vecB(1)
+      res_cross(1) = vecA(2)*vecB(3) - vecA(3)*vecB(2)
+      res_cross(2) = vecA(3)*vecB(1) - vecA(1)*vecB(3)
+      res_cross(3) = vecA(1)*vecB(2) - vecA(2)*vecB(1)
 
    end function cross
 
@@ -398,31 +398,31 @@ contains
    !<-------------------------------------------------------------
    subroutine isort(narray, array)
       implicit none
-      integer, intent(in   ) :: narray
+      integer, intent(in) :: narray
       integer, intent(inout) :: array(narray)
       ! local vars
       integer :: itemp
-      integer :: i,j ,indx,isgn
+      integer :: i, j, indx, isgn
 
-      if (narray.lt.2) return
+      if (narray .lt. 2) return
       ! Initialize.
       i = 0
       indx = 0
       isgn = 0
       j = 0
       do
-         call global_heapsort(narray, indx, i,j,isgn)
-         if (indx.gt.0) then
+         call global_heapsort(narray, indx, i, j, isgn)
+         if (indx .gt. 0) then
             ! SWAP ELEMENT
-            itemp    =  array(i)
+            itemp = array(i)
             array(i) = array(j)
             array(j) = itemp
-         else if (indx.lt.0) then
+         else if (indx .lt. 0) then
             ! COMPARE (array(i) and array(j) )
             isgn = 0
-            if (array(i).lt.array(j)) isgn = -1
-            if (array(i).gt.array(j)) isgn = +1
-         else if (indx.eq.0) then
+            if (array(i) .lt. array(j)) isgn = -1
+            if (array(i) .gt. array(j)) isgn = +1
+         else if (indx .eq. 0) then
             exit
          end if
       end do
@@ -439,7 +439,7 @@ contains
    !<--------------------------------------------------------------
    subroutine unique_of_sorted(n_elements, elements, nunique)
       implicit none
-      integer, intent(in   ) :: n_elements
+      integer, intent(in) :: n_elements
       integer, intent(inout) :: elements(n_elements)
       integer, intent(inout) :: nunique
       ! local
@@ -453,7 +453,7 @@ contains
       nunique = 1
       do i = 2, n_elements
          current_element = elements(i)
-         if ( current_element .ne. unique_element) then
+         if (current_element .ne. unique_element) then
             ! new node found. Add an moved it in the
             ! corresponding position
             nunique = nunique + 1
@@ -484,11 +484,11 @@ contains
       integer :: i
 
       a_before_b = .true.
-      do i=1,n
-         if  ( a(i) .gt. b(i) ) then
+      do i = 1, n
+         if (a(i) .gt. b(i)) then
             a_before_b = .false.
             exit
-         else if ( a(i) .lt. b(i) ) then
+         else if (a(i) .lt. b(i)) then
             a_before_b = .true.
             exit
          end if
@@ -598,34 +598,34 @@ contains
       !
       implicit none
 
-      integer ( kind = 4 ) i
-      integer ( kind = 4 ), save :: i_save = 0
-      integer ( kind = 4 ) indx
-      integer ( kind = 4 ) isgn
-      integer ( kind = 4 ) j
-      integer ( kind = 4 ), save :: j_save = 0
-      integer ( kind = 4 ), save :: k = 0
-      integer ( kind = 4 ), save :: k1 = 0
-      integer ( kind = 4 ) n
-      integer ( kind = 4 ), save :: n1 = 0
+      integer(kind=4) i
+      integer(kind=4), save :: i_save = 0
+      integer(kind=4) indx
+      integer(kind=4) isgn
+      integer(kind=4) j
+      integer(kind=4), save :: j_save = 0
+      integer(kind=4), save :: k = 0
+      integer(kind=4), save :: k1 = 0
+      integer(kind=4) n
+      integer(kind=4), save :: n1 = 0
       !
       !  INDX = 0: This is the first call.
       !
-      if ( indx == 0 ) then
+      if (indx == 0) then
 
          i_save = 0
          j_save = 0
-         k = n / 2
+         k = n/2
          k1 = k
          n1 = n
          !
          !  INDX < 0: The user is returning the results of a comparison.
          !
-      else if ( indx < 0 ) then
+      else if (indx < 0) then
 
-         if ( indx == -2 ) then
+         if (indx == -2) then
 
-            if ( isgn < 0 ) then
+            if (isgn < 0) then
                i_save = i_save + 1
             end if
 
@@ -638,16 +638,16 @@ contains
 
          end if
 
-         if ( 0 < isgn ) then
+         if (0 < isgn) then
             indx = 2
             i = i_save
             j = j_save
             return
          end if
 
-         if ( k <= 1 ) then
+         if (k <= 1) then
 
-            if ( n1 == 1 ) then
+            if (n1 == 1) then
                i_save = 0
                j_save = 0
                indx = 0
@@ -669,7 +669,7 @@ contains
          !
          !  0 < INDX, the user was asked to make an interchange.
          !
-      else if ( indx == 1 ) then
+      else if (indx == 1) then
 
          k1 = k
 
@@ -677,33 +677,33 @@ contains
 
       do
 
-      i_save = 2 * k1
+         i_save = 2*k1
 
-      if ( i_save == n1 ) then
-         j_save = k1
-         k1 = i_save
-         indx = -1
-         i = i_save
-         j = j_save
-         return
-      else if ( i_save <= n1 ) then
-         j_save = i_save + 1
-         indx = -2
-         i = i_save
-         j = j_save
-         return
-      end if
+         if (i_save == n1) then
+            j_save = k1
+            k1 = i_save
+            indx = -1
+            i = i_save
+            j = j_save
+            return
+         else if (i_save <= n1) then
+            j_save = i_save + 1
+            indx = -2
+            i = i_save
+            j = j_save
+            return
+         end if
 
-      if ( k <= 1 ) then
-         exit
-      end if
+         if (k <= 1) then
+            exit
+         end if
 
-      k = k - 1
-      k1 = k
+         k = k - 1
+         k1 = k
 
       end do
 
-      if ( n1 == 1 ) then
+      if (n1 == 1) then
          i_save = 0
          j_save = 0
          indx = 0
@@ -725,7 +725,7 @@ contains
    !>---------------------------------------------------------------
    !> @brief ifind
    !<--------------------------------------------------------------
-   function ifind(narray, array, tobefound) result (i)
+   function ifind(narray, array, tobefound) result(i)
       implicit none
       integer, intent(in) :: narray
       integer, intent(in) :: tobefound
@@ -735,12 +735,12 @@ contains
       logical :: found
 
       i = 1
-      found = (array(i).eq.tobefound)
-      do while ((.not.found).and.(i.lt.narray))
-         i=i+1
-         found = (array(i).eq.tobefound)
+      found = (array(i) .eq. tobefound)
+      do while ((.not. found) .and. (i .lt. narray))
+         i = i + 1
+         found = (array(i) .eq. tobefound)
       end do
-      if (.not.found) i=0
+      if (.not. found) i = 0
 
    end function ifind
 
@@ -807,66 +807,66 @@ contains
       !
       implicit none
 
-      integer ( kind = 4 ) m
-      integer ( kind = 4 ) n
+      integer(kind=4) m
+      integer(kind=4) n
 
-      real ( kind = double ) a(m,n)
-      real ( kind = double ), allocatable ::  a_temp(:)
+      real(kind=double) a(m, n)
+      real(kind=double), allocatable ::  a_temp(:)
 
-      integer ( kind = 4 ) res
-      integer ( kind = 4 ) iget
-      integer ( kind = 4 ) iput
-      integer ( kind = 4 ) istart
-      integer ( kind = 4 ) p(n)
+      integer(kind=4) res
+      integer(kind=4) iget
+      integer(kind=4) iput
+      integer(kind=4) istart
+      integer(kind=4) p(n)
       !
       !  Search for the next element of the permutation that has not been used.
       !
-      allocate(a_temp(m),stat=res)
-      if (res .ne. 0) write(*,*) ' Error allocation double double_col_permute'
+      allocate (a_temp(m), stat=res)
+      if (res .ne. 0) write (*, *) ' Error allocation double double_col_permute'
 
       do istart = 1, n
 
-      if ( p(istart) < 0 ) then
+         if (p(istart) < 0) then
 
-         cycle
+            cycle
 
-      else if ( p(istart) == istart ) then
+         else if (p(istart) == istart) then
 
-         p(istart) = -p(istart)
-         cycle
+            p(istart) = -p(istart)
+            cycle
 
-      else
+         else
 
-         a_temp(1:m) = a(1:m,istart)
-         iget = istart
-         !
-         !  Copy the new value into the vacated entry.
-         !
-         do
+            a_temp(1:m) = a(1:m, istart)
+            iget = istart
+            !
+            !  Copy the new value into the vacated entry.
+            !
+            do
 
-         iput = iget
-         iget = p(iget)
+               iput = iget
+               iget = p(iget)
 
-         p(iput) = -p(iput)
+               p(iput) = -p(iput)
 
-         if ( iget < 1 .or. n < iget ) then
-            write ( *, '(a)' ) ' '
-            write ( *, '(a)' ) 'R8COL_PERMUTE - Fatal error!'
-            write ( *, '(a)' ) '  A permutation index is out of range.'
-            write ( *, '(a,i8,a,i8)' ) '  P(', iput, ') = ', iget
-            stop
+               if (iget < 1 .or. n < iget) then
+                  write (*, '(a)') ' '
+                  write (*, '(a)') 'R8COL_PERMUTE - Fatal error!'
+                  write (*, '(a)') '  A permutation index is out of range.'
+                  write (*, '(a,i8,a,i8)') '  P(', iput, ') = ', iget
+                  stop
+               end if
+
+               if (iget == istart) then
+                  a(1:m, iput) = a_temp(1:m)
+                  exit
+               end if
+
+               a(1:m, iput) = a(1:m, iget)
+
+            end do
+
          end if
-
-         if ( iget == istart ) then
-            a(1:m,iput) = a_temp(1:m)
-            exit
-         end if
-
-         a(1:m,iput) = a(1:m,iget)
-
-         end do
-
-      end if
 
       end do
       !
@@ -876,8 +876,8 @@ contains
 
       return
 
-      deallocate(a_temp,stat=res)
-      if (res .ne. 0) write(*,*) ' Error deallocation double double_col_permute'
+      deallocate (a_temp, stat=res)
+      if (res .ne. 0) write (*, *) ' Error deallocation double double_col_permute'
 
    end subroutine double_col_permute
 
@@ -945,66 +945,66 @@ contains
       !
       implicit none
 
-      integer ( kind = 4 ) m
-      integer ( kind = 4 ) n
+      integer(kind=4) m
+      integer(kind=4) n
 
-      integer ( kind = 4 ) :: a(m,n)
-      integer ( kind = 4 ) ,allocatable ::  a_temp(:)
+      integer(kind=4) :: a(m, n)
+      integer(kind=4), allocatable ::  a_temp(:)
 
-      integer ( kind = 4 ) res
-      integer ( kind = 4 ) iget
-      integer ( kind = 4 ) iput
-      integer ( kind = 4 ) istart
-      integer ( kind = 4 ) p(n)
+      integer(kind=4) res
+      integer(kind=4) iget
+      integer(kind=4) iput
+      integer(kind=4) istart
+      integer(kind=4) p(n)
       !
       !  Search for the next element of the permutation that has not been used.
       !
-      allocate(a_temp(m),stat=res)
-      if (res .ne. 0) write(*,*) ' Error allocation double double_col_permute'
+      allocate (a_temp(m), stat=res)
+      if (res .ne. 0) write (*, *) ' Error allocation double double_col_permute'
 
       do istart = 1, n
 
-      if ( p(istart) < 0 ) then
+         if (p(istart) < 0) then
 
-         cycle
+            cycle
 
-      else if ( p(istart) == istart ) then
+         else if (p(istart) == istart) then
 
-         p(istart) = -p(istart)
-         cycle
+            p(istart) = -p(istart)
+            cycle
 
-      else
+         else
 
-         a_temp(1:m) = a(1:m,istart)
-         iget = istart
-         !
-         !  Copy the new value into the vacated entry.
-         !
-         do
+            a_temp(1:m) = a(1:m, istart)
+            iget = istart
+            !
+            !  Copy the new value into the vacated entry.
+            !
+            do
 
-         iput = iget
-         iget = p(iget)
+               iput = iget
+               iget = p(iget)
 
-         p(iput) = -p(iput)
+               p(iput) = -p(iput)
 
-         if ( iget < 1 .or. n < iget ) then
-            write ( *, '(a)' ) ' '
-            write ( *, '(a)' ) 'integer COL_PERMUTE - Fatal error!'
-            write ( *, '(a)' ) '  A permutation index is out of range.'
-            write ( *, '(a,i8,a,i8)' ) '  P(', iput, ') = ', iget
-            stop
+               if (iget < 1 .or. n < iget) then
+                  write (*, '(a)') ' '
+                  write (*, '(a)') 'integer COL_PERMUTE - Fatal error!'
+                  write (*, '(a)') '  A permutation index is out of range.'
+                  write (*, '(a,i8,a,i8)') '  P(', iput, ') = ', iget
+                  stop
+               end if
+
+               if (iget == istart) then
+                  a(1:m, iput) = a_temp(1:m)
+                  exit
+               end if
+
+               a(1:m, iput) = a(1:m, iget)
+
+            end do
+
          end if
-
-         if ( iget == istart ) then
-            a(1:m,iput) = a_temp(1:m)
-            exit
-         end if
-
-         a(1:m,iput) = a(1:m,iget)
-
-         end do
-
-      end if
 
       end do
       !
@@ -1014,8 +1014,8 @@ contains
 
       return
 
-      deallocate(a_temp,stat=res)
-      if (res .ne. 0) write(*,*) &
+      deallocate (a_temp, stat=res)
+      if (res .ne. 0) write (*, *) &
          ' Error deallocation double double_col_permute'
 
    end subroutine integer_col_permute
@@ -1031,7 +1031,7 @@ contains
    !<------------------------------------------------------------------
    function p_norm(ndata, power, data, weight) result(total)
       implicit none
-      integer,           intent(in)           :: ndata
+      integer, intent(in)           :: ndata
       real(kind=double), intent(in)           :: power
       real(kind=double), intent(in)           :: data(ndata)
       real(kind=double), intent(in), optional :: weight(ndata)
@@ -1044,24 +1044,24 @@ contains
          total = maxval(abs(data))
       else
          if (present(weight)) then
-            if (abs(power-one) < small) then
-               total = ddot(ndata, abs(data) ,1, weight,1)
+            if (abs(power - one) < small) then
+               total = ddot(ndata, abs(data), 1, weight, 1)
             else
                total = zero
                do i = 1, ndata
-                  total = total + abs(data(i)) ** power * weight(i)
+                  total = total + abs(data(i))**power*weight(i)
                end do
-               total = total ** (one/power)
+               total = total**(one/power)
             end if
          else
-            if (abs(power-one) < small) then
+            if (abs(power - one) < small) then
                total = sum(abs(data))
             else
                total = zero
                do i = 1, ndata
-                  total = total + abs(data(i)) ** power
+                  total = total + abs(data(i))**power
                end do
-               total = total ** (one/power)
+               total = total**(one/power)
             end if
          end if
       end if
@@ -1079,19 +1079,19 @@ contains
    !<-----------------------------------------------------s
    subroutine ortogonalize(dim, nvectors, vectors, x)
       implicit none
-      integer,           intent(in   ) :: dim
-      integer,           intent(in   ) :: nvectors
-      real(kind=double), intent(in   ) :: vectors(dim,nvectors)
+      integer, intent(in) :: dim
+      integer, intent(in) :: nvectors
+      real(kind=double), intent(in) :: vectors(dim, nvectors)
       real(kind=double), intent(inout) :: x(dim)
       ! local
       integer :: i
-      real(kind=double) :: ddot,alpha,beta
+      real(kind=double) :: ddot, alpha, beta
 
-      do i=1,nvectors
-         beta  = ddot(dim,vectors(1,i),1,x,1)
-         alpha = -beta/ddot(dim,vectors(1,i),1,vectors(1,i),1)
+      do i = 1, nvectors
+         beta = ddot(dim, vectors(1, i), 1, x, 1)
+         alpha = -beta/ddot(dim, vectors(1, i), 1, vectors(1, i), 1)
          !x=x-alpha*vectors(:,i)
-         call daxpy(dim,alpha,vectors(1,i),1,x,1)
+         call daxpy(dim, alpha, vectors(1, i), 1, x, 1)
       end do
 
    end subroutine ortogonalize
@@ -1107,7 +1107,7 @@ contains
    !<-------------------------------------------------------------
    subroutine orthogonal_projection(ndim, vector, normal, res_proj)
       implicit none
-      integer,           intent(in)  :: ndim
+      integer, intent(in)  :: ndim
       real(kind=double), intent(in)  :: vector(ndim)
       real(kind=double), intent(in)  :: normal(ndim)
       real(kind=double), intent(out) :: res_proj(ndim)
@@ -1115,11 +1115,11 @@ contains
       real(kind=double) :: alpha, beta
       real(kind=double) :: ddot
 
-      beta  = ddot(ndim,vector,1,normal,1)
-      alpha = -beta/ddot(ndim,normal,1,normal,1)
+      beta = ddot(ndim, vector, 1, normal, 1)
+      alpha = -beta/ddot(ndim, normal, 1, normal, 1)
       !x=x-alpha*vectors(:,i)
-      call dcopy(ndim,vector,1,res_proj,1)
-      call daxpy(ndim,alpha,normal,1,res_proj,1)
+      call dcopy(ndim, vector, 1, res_proj, 1)
+      call daxpy(ndim, alpha, normal, 1, res_proj, 1)
 
    end subroutine orthogonal_projection
 
@@ -1133,10 +1133,10 @@ contains
    subroutine fn_print(this, lun)
       implicit none
       class(file), intent(in) :: this
-      integer,     intent(in) :: lun
+      integer, intent(in) :: lun
 
-      write(lun,'(a,a,a,i3)') ' filename ',etb(this%fn), &
-         ' linked to lun ',this%lun
+      write (lun, '(a,a,a,i3)') ' filename ', etb(this%fn), &
+         ' linked to lun ', this%lun
 
    end subroutine fn_print
 
@@ -1156,8 +1156,8 @@ contains
       str_dir(:) = ' '
 
       nstr = len(etb(str_file))
-      pbar = scan(etb(str_file),"/", BACK= .true.)
-      if (pbar.eq.0) then
+      pbar = scan(etb(str_file), "/", BACK=.true.)
+      if (pbar .eq. 0) then
          str_dir(1:1) = '.'
       else
          str_dir(1:pbar) = str_file(1:pbar)
@@ -1189,20 +1189,20 @@ contains
    !> @param[inout] info: (optional) flag for existence of file:
    !>  returns `-1` if file does not exist
    !<-------------------------------------------------------------
-   subroutine fn_init(this, lun_err, fn, lun, io_flag,&
-         mandatory_input, folder, verbose, info)
+   subroutine fn_init(this, lun_err, fn, lun, io_flag, &
+                      mandatory_input, folder, verbose, info)
       implicit none
-      class(file),      intent(inout)           :: this
-      integer,          intent(in   )           :: lun_err
-      character(len=*), intent(in   )           :: fn
-      integer,          intent(in   )           :: lun
-      character(len=*), intent(in   )           :: io_flag
-      logical,          intent(in   ), optional :: mandatory_input
-      logical,          intent(in   ), optional :: folder
-      logical,          intent(in   ), optional :: verbose
-      integer,          intent(inout), optional :: info
+      class(file), intent(inout)           :: this
+      integer, intent(in)           :: lun_err
+      character(len=*), intent(in)           :: fn
+      integer, intent(in)           :: lun
+      character(len=*), intent(in)           :: io_flag
+      logical, intent(in), optional :: mandatory_input
+      logical, intent(in), optional :: folder
+      logical, intent(in), optional :: verbose
+      integer, intent(inout), optional :: info
       ! local vars
-      logical :: exist,file_exist,rc,mandatory,open_unit,printmsg
+      logical :: exist, file_exist, rc, mandatory, open_unit, printmsg
       integer :: res
 
       this%fn = etb(fn)
@@ -1218,23 +1218,23 @@ contains
 
       ! handle folders
       open_unit = .true.
-      if (present(folder)) open_unit = .not.folder
+      if (present(folder)) open_unit = .not. folder
 
       ! for input files or folders check existence
       ! if marked as not mandatory print a warning message
       ! otherwise it stops
-      if(io_flag.eq.'in') then
-         inquire(file=this%fn,exist=exist)
-         this%exist=exist
-         if (.not.exist) then
+      if (io_flag .eq. 'in') then
+         inquire (file=this%fn, exist=exist)
+         this%exist = exist
+         if (.not. exist) then
             ! warning or stop
             if (mandatory) then
-               file_exist = IOerr(lun_err, err_IO, 'file%init',&
-                  ' mandatory named :'//etb(this%fn)//' not found',lun)
+               file_exist = IOerr(lun_err, err_IO, 'file%init', &
+                                  ' mandatory named :'//etb(this%fn)//' not found', lun)
             else
                if (printmsg) &
-                  file_exist = IOerr(lun_err, wrn_IO, 'file%init',&
-                  ' optional named : '//etb(this%fn)//' not found',lun)
+                  file_exist = IOerr(lun_err, wrn_IO, 'file%init', &
+                                     ' optional named : '//etb(this%fn)//' not found', lun)
             end if
             if (present(info)) info = -1
             ! exit
@@ -1244,10 +1244,10 @@ contains
 
       ! if exist and it is not a folder open unit
       if (open_unit) then
-         open(lun,file=this%fn,iostat=res)
-         if(res .ne. 0) rc = IOerr(lun_err, err_IO,&
-            'file%init', &
-            'err opening file '//etb(this%fn),lun)
+         open (lun, file=this%fn, iostat=res)
+         if (res .ne. 0) rc = IOerr(lun_err, err_IO, &
+                                    'file%init', &
+                                    'err opening file '//etb(this%fn), lun)
          this%exist = .true.
       end if
 
@@ -1261,21 +1261,21 @@ contains
    subroutine fn_kill(this, lun_err)
       implicit none
       class(file), intent(inout) :: this
-      integer,     intent(in)    :: lun_err
+      integer, intent(in)    :: lun_err
       ! local vars
-      logical :: rc,is_open
+      logical :: rc, is_open
       integer :: res
 
-      inquire (this%lun,opened=is_open)
+      inquire (this%lun, opened=is_open)
       if (is_open) then
-         close(this%lun,iostat=res)
-         if(res.ne.0) rc = IOerr(lun_err, err_IO,&
-            'file%kill', &
-            'err closing file '//etb(this%fn),res)
+         close (this%lun, iostat=res)
+         if (res .ne. 0) rc = IOerr(lun_err, err_IO, &
+                                    'file%kill', &
+                                    'err closing file '//etb(this%fn), res)
          this%exist = .false.
       end if
-      this%fn=' '
-      this%lun=-1
+      this%fn = ' '
+      this%lun = -1
 
    end subroutine fn_kill
 
