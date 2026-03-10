@@ -40,10 +40,10 @@ The following cache variables may be set to influence the library detection:
   - ``subproject``: Use source in subprojects directory
   - ``fetch``: Fetch the source from upstream
 
-``TEST_DRIVE_DIR``
+``TEST_DRIVE_DIR`` or ``test-drive_DIR``
   Used for searching the CMake config file
 
-``TEST_DRIVE_ROOT``
+``TEST_DRIVE_ROOT`` or ``test-drive_ROOT``
   Used for searching the CMake install directory
 
 ``TEST_DRIVE_SUBPROJECT``
@@ -79,10 +79,6 @@ foreach(method ${${_pkg}_FIND_METHOD})
     if(DEFINED "${_pkg}_DIR")
       set("_${_pkg}_DIR")
       set("${_lib}_DIR" "${${_pkg}_DIR}")
-    endif()
-    if(DEFINED "${_pkg}_ROOT")
-      set("_${_pkg}_ROOT")
-      set("${_lib}_ROOT" "${${_pkg}_ROOT}")
     endif()
     find_package("${_lib}" CONFIG QUIET)
     if("${${_lib}_FOUND}")
@@ -159,10 +155,6 @@ endif()
 if(DEFINED "_${_pkg}_SUBPROJECT")
   unset("${_pkg}_SUBPROJECT")
   unset("_${_pkg}_SUBPROJECT")
-endif()
-if(DEFINED "_${_pkg}_ROOT")
-  unset("${_lib}_ROOT")
-  unset("_${_pkg}_ROOT")
 endif()
 if(DEFINED "_${_pkg}_DIR")
   unset("${_lib}_DIR")
