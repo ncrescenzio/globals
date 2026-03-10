@@ -41,7 +41,7 @@ include(cmake/jsonfortran.cmake)
 
 # Build "globals" library
 add_subdirectory(srcs)
-# add_subdirectory(examples)
+add_subdirectory(examples)
 
 #####################################################################
 
