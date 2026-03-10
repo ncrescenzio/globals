@@ -1,0 +1,2 @@
+add_executable(example_kinddeclaration test_kinddeclaration.f90)
+target_link_libraries(example_kinddeclaration PRIVATE ${GLOBALS_LIBRARY})
