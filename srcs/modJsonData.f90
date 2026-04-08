@@ -319,6 +319,7 @@ contains
       call core%clone(p, pclone)
       call value%init_empty()
       call value%data%add(pclone, destroy_original=.false.)
+      call this%throw_error()
 
    end subroutine get_object
 
@@ -432,7 +433,6 @@ contains
       class(json_type), intent(out) :: this
       type(json_type), intent(in) :: other
 
-      call this%init_empty()
       this%data = other%data
 
    end subroutine assign_json_type
