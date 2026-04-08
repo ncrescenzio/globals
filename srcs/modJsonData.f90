@@ -68,7 +68,8 @@ module JsonData
 
       generic, public :: assignment(=) => assign_json_type, init_string
 
-      procedure, public, pass :: kill
+      generic, public :: kill => kill_json_type
+      procedure, private :: kill_json_type
       final :: finalize_json_type
    end type json_type
 
@@ -120,14 +121,14 @@ contains
 
    end subroutine init_string
 
-   subroutine kill(this)
+   subroutine kill_json_type(this)
       implicit none
       class(json_type), intent(inout) :: this
 
       call this%data%destroy(.true.)
       call this%throw_error()
 
-   end subroutine kill
+   end subroutine kill_json_type
 
    subroutine finalize_json_type(this)
       implicit none
