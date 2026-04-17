@@ -8,6 +8,22 @@ set(JSONFORTRAN_SOURCE_DIR "${PROJECT_SOURCE_DIR}/${JSONFORTRAN_SUBPROJECT_DIR}"
 set(JSONFORTRAN_BINARY_DIR "${PROJECT_BINARY_DIR}/${JSONFORTRAN_SUBPROJECT_DIR}")
 set(JSONFORTRAN_MOD_DIR "${JSONFORTRAN_BINARY_DIR}")
 
+if (NOT EXISTS "${JSONFORTRAN_SOURCE_DIR}")
+   message(FATAL_ERROR
+      "[jsonfortran] directory not found! "
+      "Use `git submodule update --init`\n")
+elseif (NOT IS_DIRECTORY "${JSONFORTRAN_SOURCE_DIR}")
+   message(FATAL_ERROR "[jsonfortran] expected directory, found something else!\n")
+else ()
+   file(GLOB DIR_CONTENTS "${JSONFORTRAN_SOURCE_DIR}/*")
+   list(LENGTH DIR_CONTENTS CONTENT_LENGTH)
+   if (${CONTENT_LENGTH} EQUAL 0)
+      message(FATAL_ERROR
+         "[jsonfortran] found empty directory! "
+         "Use `git submodule update --init`\n")
+   endif ()
+endif ()
+
 set(JSONFORTRAN_ENABLE_DOC_GENERATION OFF)  # disable generation documentation
 set(JSONFORTRAN_ENABLE_TESTS OFF)           # disable tests
 set(JSONFORTRAN_STATIC_LIBRARY_ONLY ON)     # build only static library
