@@ -70,7 +70,7 @@ program tester
    call json%set('newkeyobject',other)
    ! call json%write()
 
-   call json%get("ping", other)
+   call json%get("pinguu", other) ! this throws an error
    ! call other%write()
    ! call json%write()
 
