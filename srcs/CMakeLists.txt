@@ -15,10 +15,9 @@ set_target_properties(${GLOBALS_LIBRARY}
 target_include_directories(${GLOBALS_LIBRARY}
    INTERFACE
    $<BUILD_INTERFACE:${BUILD_MOD_DIR}>
-   $<INSTALL_INTERFACE:mod/globals>
+   $<INSTALL_INTERFACE:mod>
    PRIVATE
    $<BUILD_INTERFACE:${JSONFORTRAN_MOD_DIR}>
-   $<INSTALL_INTERFACE:mod/jsonfortran>
 )
 
 target_link_libraries(${GLOBALS_LIBRARY}
@@ -30,7 +29,7 @@ target_link_libraries(${GLOBALS_LIBRARY}
 include(GNUInstallDirs)
 
 install(DIRECTORY ${BUILD_MOD_DIR}/
-   DESTINATION mod/globals
+   DESTINATION mod
    COMPONENT library
    FILES_MATCHING PATTERN "*.mod"
 )
