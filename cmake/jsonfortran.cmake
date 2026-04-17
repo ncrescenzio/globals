@@ -12,4 +12,10 @@ set(JSONFORTRAN_ENABLE_DOC_GENERATION OFF)  # disable generation documentation
 set(JSONFORTRAN_ENABLE_TESTS OFF)           # disable tests
 set(JSONFORTRAN_STATIC_LIBRARY_ONLY ON)     # build only static library
 set(USE_GNU_INSTALL_CONVENTION ON)          # install using gnu
+
+# Enable json-fortran's robust internal debug configuration
+if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+    set(ENABLE_RUNTIME_CHECKS ON CACHE BOOL "Enable compiler run-time checks" FORCE)
+endif()
+
 add_subdirectory(${JSONFORTRAN_SOURCE_DIR} EXCLUDE_FROM_ALL)
