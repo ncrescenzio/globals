@@ -1,13 +1,14 @@
 #!/bin/bash
 
 builddir=build
-installdir=../libglobals/
+installdir="$PWD/../libglobals/"
 
-[[ -d "$builddir" ]] && rm -rf "$builddir"
-[[ -d "$libglobals" ]] && rm -rf "$libglobals"
+echo "BUILD DIR: $builddir"
+echo "INSTALL DIR: $installdir"
 
-cmake -S . -B "$builddir" -DCMAKE_BUILD_TYPE="Release"
+[[ -d "$builddir" ]] && { rm -rf "$builddir"; echo "removing ${builddir}..."; }
+[[ -d "$installdir" ]] && { rm -rf "$installdir"; echo "removing ${installdir}..."; }
+
+cmake -S . -B "$builddir" -DCMAKE_BUILD_TYPE="Debug"
 cmake --build "$builddir" -j $(nproc)
 cmake --install "$builddir" --prefix "$installdir"
-
-
