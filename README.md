@@ -15,11 +15,10 @@
 
 - **Standardized Kind Declarations** (`modKindDeclaration`): Ensure consistent precision across your numerical applications.
 - **Robust Error Handling & I/O** (`modGlobals`): Simplified and safe file management and warning/error propagation.
-- **JSON Configuration Parsing** (`modJsonData`): Fortran-friendly wrapper for `jsonfortran` to handle complex configuration files easily.
+- **JSON Configuration Parsing** (`modJsonData`): Fortran-friendly wrapper for [`json-fortran`](https://github.com/jacobwilliams/json-fortran) to handle complex configuration files easily.
 - **Timing & Performance Analysis** (`modTiming`, `modTimeInputs`, `modTimeOutputs`): Routines to profile and benchmark simulation segments.
 - **Math & Utilities** (`modGaussQuadrature`, `modNorms`, `modDataSequence`): Standard computational tools out-of-the-box.
 
----
 
 ## 🗂️ Directory Structure
 
@@ -32,7 +31,6 @@ globals/
 └── CMakeLists.txt    # Main CMake build configuration
 ```
 
----
 
 ## 🛠️ Dependencies
 
@@ -41,9 +39,8 @@ To build the library, you must have the following dependencies installed:
 - **CMake**: >= 3.28
 - **Fortran Compiler**: gfortran.
 - **LAPACK & BLAS**: Linear algebra systems.
-- **json-fortran**: A Fortran API for JSON data manipulation.
+- [**json-fortran**](https://github.com/jacobwilliams/json-fortran): A Fortran API for JSON data manipulation.
 
----
 
 ## 🚀 Getting Started
 
@@ -84,7 +81,6 @@ cmake --build . -j $(nproc)
 ctest
 ```
 
----
 
 ## 💻 Usage in Your Projects
 
