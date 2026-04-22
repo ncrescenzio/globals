@@ -14,3 +14,4 @@ macro(ADDTEST name)
 endmacro(ADDTEST)
 
 ADDTEST("kinddeclaration")
+ADDTEST("jsondata")

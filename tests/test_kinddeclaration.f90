@@ -35,7 +35,7 @@ end module test_kinddeclaration
 program tester
 
    use, intrinsic :: iso_fortran_env, only : error_unit
-   use testdrive, only : run_testsuite, new_testsuite, testsuite_type
+   use testdrive, only : run_testsuite, new_testsuite, testsuite_type, init_color_output
    use test_kinddeclaration, only : collect_kinddeclaration
 
    implicit none
@@ -49,6 +49,8 @@ program tester
    testsuites = [ &
       new_testsuite("kinddeclaration", collect_kinddeclaration) &
       ]
+
+   call init_color_output(.true.)
 
    do is = 1, size(testsuites)
       write(error_unit, fmt) "Testing:", testsuites(is)%name
